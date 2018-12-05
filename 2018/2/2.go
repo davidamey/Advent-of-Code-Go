@@ -1,7 +1,7 @@
 package main
 
 import (
-	"advent/2018/util"
+	"advent/util"
 	"fmt"
 	"log"
 )
