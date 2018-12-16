@@ -9,14 +9,14 @@ import (
 )
 
 func OpenExample() (*os.File, error) {
-	return openFile("example")
+	return OpenFile("example")
 }
 
 func OpenInput() (*os.File, error) {
-	return openFile("input")
+	return OpenFile("input")
 }
 
-func openFile(name string) (*os.File, error) {
+func OpenFile(name string) (*os.File, error) {
 	dir, _ := os.Getwd()
 
 	// If we're in 2018 base, then look in the appropriate 'day' folder
