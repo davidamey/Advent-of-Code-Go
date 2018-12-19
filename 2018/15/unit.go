@@ -8,7 +8,7 @@ import (
 type Unit struct {
 	Game *Game
 	Rune rune
-	Pos  Point
+	Pos  util.Point
 	HP   int
 	Atk  int
 }
@@ -66,14 +66,14 @@ func (u *Unit) Opponent() *Unit {
 }
 
 func (u *Unit) Move() bool {
-	var moveTargets []Point
+	var moveTargets []util.Point
 	targets := u.Targets()
 	if len(targets) == 0 {
 		return false
 	}
 
 	for _, t := range targets {
-		for _, p := range t.Pos.Adjacent() {
+		for _, p := range t.Pos.Adjacent(false) {
 			if u.Game.Grid[p.Y][p.X] == '.' {
 				// u.Game.Grid[p.Y][p.X] = '?'
 				moveTargets = append(moveTargets, p)

@@ -109,32 +109,19 @@ func (g *Game) Run(visual, allowElfDeath bool) (elfDied bool) {
 	}
 }
 
-type Point struct {
-	X, Y int
-}
-
-func (p *Point) Adjacent() []Point {
-	return []Point{
-		Point{p.X, p.Y - 1},
-		Point{p.X - 1, p.Y},
-		Point{p.X + 1, p.Y},
-		Point{p.X, p.Y + 1},
-	}
-}
-
 type PathNode struct {
-	Pos    Point
+	Pos    util.Point
 	Length int
 	Parent *PathNode
 }
 
-func ShortestPath(start Point, ends []Point, grid [][]rune) []PathNode {
+func ShortestPath(start util.Point, ends []util.Point, grid [][]rune) []PathNode {
 	var found []PathNode
 
 	queue := make([]PathNode, 1, 4)
 	queue[0] = PathNode{start, 0, nil}
 
-	processed := make(map[Point]bool)
+	processed := make(map[util.Point]bool)
 
 	depth := 0
 	shortest := -1
@@ -163,7 +150,7 @@ func ShortestPath(start Point, ends []Point, grid [][]rune) []PathNode {
 		}
 
 		// Add all children to the queue if we haven't processed them already
-		for _, c := range node.Pos.Adjacent() {
+		for _, c := range node.Pos.Adjacent(false) {
 			if _, ok := processed[c]; ok {
 				// fmt.Println("skipping", c)
 				continue
@@ -187,9 +174,9 @@ func Parse(lines []string, elfAtk int) *Game {
 		for x, r := range l {
 			switch r {
 			case 'E':
-				g.Units = append(g.Units, &Unit{&g, r, Point{x, y}, 200, elfAtk})
+				g.Units = append(g.Units, &Unit{&g, r, util.Point{X: x, Y: y}, 200, elfAtk})
 			case 'G':
-				g.Units = append(g.Units, &Unit{&g, r, Point{x, y}, 200, 3})
+				g.Units = append(g.Units, &Unit{&g, r, util.Point{X: x, Y: y}, 200, 3})
 			}
 			g.Grid[y][x] = r
 		}
@@ -264,13 +251,3 @@ func Print(g *Game, clear bool) {
 	}
 	fmt.Println()
 }
-
-// for _, c := range carts {
-// 	if c.x == x && c.y == y {
-// 		format = "\033[92m%c\033[0m"
-// 		if c.crashed {
-// 			format = "\033[91m%c\033[0m"
-// 		}
-// 		r = c.rune()
-// 	}
-// }
