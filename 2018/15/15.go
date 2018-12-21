@@ -8,11 +8,17 @@ import (
 )
 
 func main() {
+	start := time.Now()
+	defer func() {
+		fmt.Println(`---`)
+		fmt.Printf("Ran in %f seconds\n", time.Since(start).Seconds())
+	}()
 	// file, _ := util.OpenExample()
 	// file, _ := util.OpenFile("example2")
 	// file, _ := util.OpenFile("example3")
 
-	file, _ := util.OpenInput()
+	// file, _ := util.OpenInput()
+	file, _ := util.OpenFile("input_alt")
 	defer file.Close()
 	lines, _ := util.ReadLines(file)
 
