@@ -19,6 +19,10 @@ func (p *Point) Down() Point {
 	return Point{p.X, p.Y + 1}
 }
 
+func (p *Point) ManhattanTo(to Point) int {
+	return AbsInt(to.X-p.X) + AbsInt(to.Y-p.Y)
+}
+
 func (p *Point) Adjacent(withCorners bool) []Point {
 	if withCorners {
 		return []Point{
