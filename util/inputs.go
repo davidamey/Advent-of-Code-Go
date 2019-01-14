@@ -19,8 +19,9 @@ func OpenInput() (*os.File, error) {
 func OpenFile(name string) (*os.File, error) {
 	dir, _ := os.Getwd()
 
-	// If we're in 2018 base, then look in the appropriate 'day' folder
-	if path.Base(dir) == "2018" {
+	// If we're in 20xx base, then look in the appropriate 'day' folder
+	switch path.Base(dir) {
+	case "2015", "2016", "2017", "2018":
 		dir = path.Join(dir, path.Base(os.Args[0]))
 	}
 
