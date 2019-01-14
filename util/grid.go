@@ -1,99 +1,112 @@
 package util
 
-import "fmt"
+import (
+	"fmt"
+)
 
-type Point struct {
-	X, Y int
-}
-
-func (p *Point) Left() Point {
-	return Point{p.X - 1, p.Y}
-}
-func (p *Point) Right() Point {
-	return Point{p.X + 1, p.Y}
-}
-func (p *Point) Up() Point {
-	return Point{p.X, p.Y - 1}
-}
-func (p *Point) Down() Point {
-	return Point{p.X, p.Y + 1}
+type Grid struct {
+	Min, Max Point
+	entries  map[Point]interface{}
 }
 
-func (p *Point) ManhattanTo(to Point) int {
-	return AbsInt(to.X-p.X) + AbsInt(to.Y-p.Y)
-}
-
-func (p *Point) Adjacent(withCorners bool) []Point {
-	if withCorners {
-		return []Point{
-			Point{p.X - 1, p.Y - 1},
-			Point{p.X, p.Y - 1},
-			Point{p.X + 1, p.Y - 1},
-			Point{p.X - 1, p.Y},
-			Point{p.X + 1, p.Y},
-			Point{p.X - 1, p.Y + 1},
-			Point{p.X, p.Y + 1},
-			Point{p.X + 1, p.Y + 1},
-		}
+func NewGrid() *Grid {
+	g := &Grid{
+		Min:     NewMaxPoint(),
+		Max:     NewMinPoint(),
+		entries: make(map[Point]interface{}),
 	}
-	return []Point{
-		Point{p.X, p.Y - 1},
-		Point{p.X - 1, p.Y},
-		Point{p.X + 1, p.Y},
-		Point{p.X, p.Y + 1},
-	}
-}
-
-func (p *Point) Within(b1, b2 Point) bool {
-	return p.X >= b1.X && p.X < b2.X &&
-		p.Y >= b1.Y && p.Y < b2.Y
-}
-
-type Grid [][]rune
-
-func NewGrid(lines []string, fn func(r rune) rune) *Grid {
-	g := make(Grid, len(lines))
-	for y, l := range lines {
-		g[y] = make([]rune, len(l))
-		for x, r := range l {
-			if fn != nil {
-				r = fn(r)
-			}
-			g[y][x] = r
-		}
-	}
-	return &g
+	return g
 }
 
 func (g *Grid) Clone() *Grid {
-	clone := make(Grid, len(*g))
-	for y, row := range *g {
-		clone[y] = make([]rune, len(row))
-		copy(clone[y], row)
+	ng := &Grid{
+		Min:     g.Min,
+		Max:     g.Max,
+		entries: make(map[Point]interface{}, len(g.entries)),
 	}
-	return &clone
+	for p, v := range g.entries {
+		ng.entries[p] = v
+	}
+	return ng
 }
 
-func (g *Grid) Bounds() (b1, b2 Point) {
-	h := len(*g)
-	w := 0
-	if h > 0 {
-		w = len((*g)[0])
+func (g *Grid) resizeFor(p Point) {
+	switch {
+	case p.X < g.Min.X:
+		g.Min.X = p.X
+	case p.Y < g.Min.Y:
+		g.Min.Y = p.Y
+	case p.X > g.Max.X:
+		g.Max.X = p.X
+	case p.Y > g.Max.Y:
+		g.Max.Y = p.Y
 	}
-	return Point{0, 0}, Point{w, h}
 }
 
-func (g *Grid) Print(clear bool) {
+func (g *Grid) Get(p Point) interface{} {
+	return g.entries[p]
+}
+func (g *Grid) GetInt(p Point) int {
+	return g.entries[p].(int)
+}
+func (g *Grid) GetRune(p Point) rune {
+	return g.entries[p].(rune)
+}
+func (g *Grid) GetAt(x, y int) interface{} {
+	return g.entries[Point{X: x, Y: y}]
+}
+func (g *Grid) GetIntAt(x, y int) int {
+	return g.entries[Point{X: x, Y: y}].(int)
+}
+func (g *Grid) GetRuneAt(x, y int) rune {
+	return g.entries[Point{X: x, Y: y}].(rune)
+}
+
+func (g *Grid) Set(p Point, i interface{}) {
+	g.entries[p] = i
+	g.resizeFor(p)
+}
+func (g *Grid) SetAt(x, y int, i interface{}) {
+	g.Set(Point{X: x, Y: y}, i)
+}
+
+func (g *Grid) InBounds(p Point) bool {
+	return p.Within(g.Min, g.Max)
+}
+func (g *Grid) InBoundsAt(x, y int) bool {
+	return g.InBounds(Point{X: x, Y: y})
+}
+
+// func (g *Grid) Corners() []Point {
+// 	return []Point{
+// 		g.Min,
+// 		Point{g.Min.X, g.Max.Y},
+// 		Point{g.Max.X, g.Min.Y},
+// 		g.Max,
+// 	}
+// }
+
+func (g *Grid) ForEach(fn func(p Point, v interface{})) {
+	for y := g.Min.Y; y <= g.Max.Y; y++ {
+		for x := g.Min.X; x <= g.Max.X; x++ {
+			p := Point{X: x, Y: y}
+			fn(p, g.Get(p))
+		}
+	}
+}
+
+func (g *Grid) Print(format string, clear bool) {
 	if clear {
 		fmt.Printf("\033[0;0H")
 		fmt.Printf("\033[2J")
 	}
 
-	for _, row := range *g {
-		for _, r := range row {
-			fmt.Printf("%c", r)
+	// spew.Dump(g)
+
+	for y := g.Min.Y; y <= g.Max.Y; y++ {
+		for x := g.Min.X; x <= g.Max.X; x++ {
+			fmt.Printf(format, g.GetAt(x, y))
 		}
 		fmt.Println()
 	}
-	fmt.Println()
 }
