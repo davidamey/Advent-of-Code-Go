@@ -1,6 +1,9 @@
 package util
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 type Vec struct {
 	X, Y int
@@ -14,6 +17,10 @@ func NewMaxVec() Vec {
 }
 func NewMinVec() Vec {
 	return Vec{math.MinInt32, math.MinInt32}
+}
+
+func (v Vec) String() string {
+	return fmt.Sprintf("(%d, %d)", v.X, v.Y)
 }
 
 func (v *Vec) Left() Vec {
@@ -57,4 +64,14 @@ func (v *Vec) Adjacent(withCorners bool) []Vec {
 func (v *Vec) Within(b1, b2 Vec) bool {
 	return v.X >= b1.X && v.X <= b2.X &&
 		v.Y >= b1.Y && v.Y <= b2.Y
+}
+
+func (v1 *Vec) Add(v2 Vec) {
+	v1.X += v2.X
+	v1.Y += v2.Y
+}
+
+func (v1 *Vec) Subtract(v2 Vec) {
+	v1.X -= v2.X
+	v1.Y -= v2.Y
 }
