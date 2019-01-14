@@ -15,7 +15,7 @@ func main() {
 	fmt.Sscanf(lines[0], "depth: %d", &depth)
 	fmt.Sscanf(lines[1], "target: %d,%d", &tx, &ty)
 
-	g := NewGrid(depth, util.Point{X: tx, Y: ty})
+	g := NewGrid(depth, util.Vec{X: tx, Y: ty})
 	sum := 0
 	// Need the +10k to allow the A* algorithm for p2 to work
 	for y := 0; y <= ty+10000; y++ {
@@ -60,13 +60,13 @@ func ToolSwitch(from, to rune) int {
 }
 
 type Node struct {
-	Pos  util.Point
+	Pos  util.Vec
 	Tool rune
 }
 
 func NewNode(x, y int, t rune) Node {
 	return Node{
-		util.Point{X: x, Y: y},
+		util.Vec{X: x, Y: y},
 		t,
 	}
 }
@@ -75,11 +75,11 @@ type Grid struct {
 	MinX, MinY int
 	MaxX, MaxY int
 	Depth      int
-	Target     util.Point
-	entries    map[util.Point]int
+	Target     util.Vec
+	entries    map[util.Vec]int
 }
 
-func NewGrid(depth int, target util.Point) *Grid {
+func NewGrid(depth int, target util.Vec) *Grid {
 	g := &Grid{
 		MinX:    math.MaxInt32,
 		MinY:    math.MaxInt32,
@@ -87,7 +87,7 @@ func NewGrid(depth int, target util.Point) *Grid {
 		MaxY:    math.MinInt32,
 		Depth:   depth,
 		Target:  target,
-		entries: make(map[util.Point]int),
+		entries: make(map[util.Vec]int),
 	}
 	return g
 }
@@ -227,7 +227,7 @@ func (g *Grid) ToErrosion(gi int) int {
 	return (gi + g.Depth) % 20183
 }
 
-func (g *Grid) ResizeFor(p util.Point) {
+func (g *Grid) ResizeFor(p util.Vec) {
 	if p.X < g.MinX {
 		g.MinX = p.X
 	}
@@ -242,21 +242,21 @@ func (g *Grid) ResizeFor(p util.Point) {
 	}
 }
 
-func (g *Grid) Set(p util.Point, i int) {
+func (g *Grid) Set(p util.Vec, i int) {
 	g.entries[p] = i
 	g.ResizeFor(p)
 }
 
-func (g *Grid) Get(p util.Point) int {
+func (g *Grid) Get(p util.Vec) int {
 	return g.entries[p]
 }
 
 func (g *Grid) SetAt(x, y, i int) {
-	g.Set(util.Point{X: x, Y: y}, i)
+	g.Set(util.Vec{X: x, Y: y}, i)
 }
 
 func (g *Grid) GetAt(x, y int) int {
-	return g.entries[util.Point{X: x, Y: y}]
+	return g.entries[util.Vec{X: x, Y: y}]
 }
 
 func (g *Grid) ForEach(fn func(v, x, y int)) {

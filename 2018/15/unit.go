@@ -8,7 +8,7 @@ import (
 type Unit struct {
 	Game *Game
 	Rune rune
-	Pos  util.Point
+	Pos  util.Vec
 	HP   int
 	Atk  int
 }
@@ -66,7 +66,7 @@ func (u *Unit) Opponent() *Unit {
 }
 
 func (u *Unit) Move() bool {
-	var moveTargets []util.Point
+	var moveTargets []util.Vec
 	targets := u.Targets()
 	if len(targets) == 0 {
 		return false

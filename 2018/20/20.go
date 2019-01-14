@@ -191,7 +191,7 @@ func (g *Grid) Print(clear bool) {
 
 			fmt.Printf("%c", g.GetDoorOrWall(x, y))
 
-			// p := util.Point{X: x, Y: y}
+			// p := util.Vec{X: x, Y: y}
 			// if g.current != nil && x == g.current.Pos.X && y == g.current.Pos.Y {
 			// 	fmt.Printf("\033[%d;%dm%c\033[0m", 92, 49, g.Get(p))
 			// 	continue

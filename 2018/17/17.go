@@ -20,7 +20,7 @@ func main() {
 	lines, _ := util.ReadLines(file)
 
 	g := NewGrid()
-	g.Set(util.Point{X: 500, Y: 0}, '+')
+	g.Set(util.Vec{X: 500, Y: 0}, '+')
 	minY := math.MaxInt32
 	maxY := math.MinInt32
 	for _, l := range lines {
@@ -38,7 +38,7 @@ func main() {
 			}
 
 			for y := v2; y <= v3; y++ {
-				g.Set(util.Point{X: v1, Y: y}, '#')
+				g.Set(util.Vec{X: v1, Y: y}, '#')
 			}
 		} else {
 			if v1 < minY {
@@ -49,7 +49,7 @@ func main() {
 			}
 
 			for x := v2; x <= v3; x++ {
-				g.Set(util.Point{X: x, Y: v1}, '#')
+				g.Set(util.Vec{X: x, Y: v1}, '#')
 			}
 		}
 	}
@@ -58,8 +58,8 @@ func main() {
 	// fmt.Println(g.minY)
 	// os.Exit(0)
 
-	flow := []util.Point{
-		util.Point{X: 500, Y: 1},
+	flow := []util.Vec{
+		util.Vec{X: 500, Y: 1},
 	}
 
 	for ; len(flow) > 0; dump(g) {
@@ -80,7 +80,7 @@ func main() {
 
 		// Flow left and right as far as possible
 		// fmt.Printf("flowing left from (%d, %d)=%c\n", w.X, w.Y, g.Get(w))
-		var row []util.Point
+		var row []util.Vec
 		contained := true
 		l := w.Left()
 		for !g.Blocked(l) {
@@ -128,7 +128,7 @@ func main() {
 	standingCount := 0
 	for y := minY; y <= maxY; y++ {
 		for x := g.minX; x <= g.maxX; x++ {
-			w := g.Get(util.Point{X: x, Y: y})
+			w := g.Get(util.Vec{X: x, Y: y})
 			if w == '~' || w == '|' {
 				waterCount++
 			}
@@ -155,7 +155,7 @@ func dump(g *Grid) {
 }
 
 type Grid struct {
-	current                *util.Point
+	current                *util.Vec
 	minX, minY, maxX, maxY int
 	entries                map[string]rune
 }
@@ -170,14 +170,14 @@ func NewGrid() *Grid {
 	}
 }
 
-func (g *Grid) Get(p util.Point) rune {
+func (g *Grid) Get(p util.Vec) rune {
 	if val, ok := g.entries[fmt.Sprintf("%d,%d", p.X, p.Y)]; ok {
 		return val
 	}
 	return '.'
 }
 
-func (g *Grid) Set(p util.Point, val rune) {
+func (g *Grid) Set(p util.Vec, val rune) {
 	// fmt.Printf("setting (%d, %d) to %c\n", x, y, val)
 	if p.X < g.minX {
 		g.minX = p.X
@@ -194,20 +194,20 @@ func (g *Grid) Set(p util.Point, val rune) {
 	g.entries[fmt.Sprintf("%d,%d", p.X, p.Y)] = val
 }
 
-func (g *Grid) Sand(p util.Point) bool {
+func (g *Grid) Sand(p util.Vec) bool {
 	r := g.Get(p)
 	return r == '.' // || r == '|'
 }
 
-func (g *Grid) Flowing(p util.Point) bool {
+func (g *Grid) Flowing(p util.Vec) bool {
 	return g.Get(p) == '|'
 }
 
-func (g *Grid) Blocked(p util.Point) bool {
+func (g *Grid) Blocked(p util.Vec) bool {
 	return g.Get(p) == '~' || g.Get(p) == '#'
 }
 
-func (g *Grid) OutOfBounds(p util.Point) bool {
+func (g *Grid) OutOfBounds(p util.Vec) bool {
 	// Cheeky <= as the water source is at 0
 	return p.Y <= g.minY || p.Y > g.maxY
 }
@@ -221,7 +221,7 @@ func (g *Grid) Print(clear bool) {
 	fmt.Println()
 	for y := g.minY; y <= g.maxY; y++ {
 		for x := g.minX - 1; x <= g.maxX+1; x++ {
-			p := util.Point{X: x, Y: y}
+			p := util.Vec{X: x, Y: y}
 			if g.current != nil && x == g.current.X && y == g.current.Y {
 				fmt.Printf("\033[%d;%dm%c\033[0m", 92, 49, g.Get(p))
 				continue
@@ -239,7 +239,7 @@ func (g *Grid) SaveToFile() {
 
 	for y := g.minY; y <= g.maxY; y++ {
 		for x := g.minX - 1; x <= g.maxX+1; x++ {
-			p := util.Point{X: x, Y: y}
+			p := util.Vec{X: x, Y: y}
 			switch g.Get(p) {
 			case '+':
 				img.Set(x, y, color.RGBA{0, 255, 0, 255})

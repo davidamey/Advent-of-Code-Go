@@ -36,16 +36,16 @@ func main() {
 	}
 
 	p1 := 0
-	g1.ForEach(func(p util.Point, v interface{}) {
-		if v.(rune) == '#' {
+	g1.ForEach(func(v util.Vec, x interface{}) {
+		if x.(rune) == '#' {
 			p1++
 		}
 	})
 	fmt.Println("p1=", p1)
 
 	p2 := 0
-	g2.ForEach(func(p util.Point, v interface{}) {
-		if v.(rune) == '#' {
+	g2.ForEach(func(v util.Vec, x interface{}) {
+		if x.(rune) == '#' {
 			p2++
 		}
 	})
@@ -54,32 +54,32 @@ func main() {
 
 func EvolveP1(g *util.Grid) *util.Grid {
 	ng := g.Clone()
-	g.ForEach(func(p util.Point, v interface{}) {
-		ng.Set(p, EvolvePoint(g, p))
+	g.ForEach(func(v util.Vec, x interface{}) {
+		ng.Set(v, EvolvePoint(g, v))
 	})
 	return ng
 }
 
 func EvolveP2(g *util.Grid) *util.Grid {
 	ng := g.Clone()
-	g.ForEach(func(p util.Point, v interface{}) {
-		switch p {
+	g.ForEach(func(v util.Vec, x interface{}) {
+		switch v {
 		case
-			util.Point{X: g.Min.X, Y: g.Min.Y},
-			util.Point{X: g.Min.X, Y: g.Max.Y},
-			util.Point{X: g.Max.X, Y: g.Min.Y},
-			util.Point{X: g.Max.X, Y: g.Max.Y}:
+			util.Vec{X: g.Min.X, Y: g.Min.Y},
+			util.Vec{X: g.Min.X, Y: g.Max.Y},
+			util.Vec{X: g.Max.X, Y: g.Min.Y},
+			util.Vec{X: g.Max.X, Y: g.Max.Y}:
 			return
 		default:
-			ng.Set(p, EvolvePoint(g, p))
+			ng.Set(v, EvolvePoint(g, v))
 		}
 	})
 	return ng
 }
 
-func EvolvePoint(g *util.Grid, p util.Point) rune {
-	sum := RuneToScore(g.GetRune(p))
-	for _, a := range p.Adjacent(true) {
+func EvolvePoint(g *util.Grid, v util.Vec) rune {
+	sum := RuneToScore(g.GetRune(v))
+	for _, a := range v.Adjacent(true) {
 		if g.InBounds(a) {
 			sum += RuneToScore(g.GetRune(a))
 		}
@@ -89,7 +89,7 @@ func EvolvePoint(g *util.Grid, p util.Point) rune {
 	case 3:
 		return '#'
 	case 4:
-		return g.GetRune(p)
+		return g.GetRune(v)
 	default:
 		return '.'
 	}
