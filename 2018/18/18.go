@@ -16,9 +16,9 @@ func main() {
 }
 
 func part1(lines []string) {
-	var current, next *util.Grid
+	var current, next *Grid
 
-	current = util.NewGrid(lines, nil)
+	current = NewGrid(lines, nil)
 	next = current.Clone()
 	// current.Print(false)
 	for i := 1; i <= 10; i++ {
@@ -49,9 +49,9 @@ func part1(lines []string) {
 }
 
 func part2(lines []string) {
-	var current, next *util.Grid
+	var current, next *Grid
 
-	current = util.NewGrid(lines, nil)
+	current = NewGrid(lines, nil)
 	next = current.Clone()
 
 	var results []string
@@ -115,7 +115,7 @@ func part2(lines []string) {
 	fmt.Println("answer = ", 510*316)
 }
 
-func Evolve(g *util.Grid, x, y int) rune {
+func Evolve(g *Grid, x, y int) rune {
 	// fmt.Printf("Looking at cell (%d, %d) = %c\n", x, y, (*g)[y][x])
 	b1, b2 := g.Bounds()
 	p := util.Point{X: x, Y: y}
@@ -158,4 +158,53 @@ func Evolve(g *util.Grid, x, y int) rune {
 	// fmt.Printf(" returning %c\n", r)
 
 	return r
+}
+
+type Grid [][]rune
+
+func NewGrid(lines []string, fn func(r rune) rune) *Grid {
+	g := make(Grid, len(lines))
+	for y, l := range lines {
+		g[y] = make([]rune, len(l))
+		for x, r := range l {
+			if fn != nil {
+				r = fn(r)
+			}
+			g[y][x] = r
+		}
+	}
+	return &g
+}
+
+func (g *Grid) Clone() *Grid {
+	clone := make(Grid, len(*g))
+	for y, row := range *g {
+		clone[y] = make([]rune, len(row))
+		copy(clone[y], row)
+	}
+	return &clone
+}
+
+func (g *Grid) Bounds() (b1, b2 util.Point) {
+	h := len(*g)
+	w := 0
+	if h > 0 {
+		w = len((*g)[0])
+	}
+	return util.Point{X: 0, Y: 0}, util.Point{X: w - 1, Y: h - 1}
+}
+
+func (g *Grid) Print(clear bool) {
+	if clear {
+		fmt.Printf("\033[0;0H")
+		fmt.Printf("\033[2J")
+	}
+
+	for _, row := range *g {
+		for _, r := range row {
+			fmt.Printf("%c", r)
+		}
+		fmt.Println()
+	}
+	fmt.Println()
 }
