@@ -43,29 +43,29 @@ func (g *Grid) resizeFor(v Vec) {
 	}
 }
 
-func (g *Grid) Get(v Vec) interface{} {
+func (g *Grid) Entry(v Vec) interface{} {
 	return g.entries[v]
 }
-func (g *Grid) GetInt(v Vec) int {
+func (g *Grid) Int(v Vec) int {
 	return g.entries[v].(int)
 }
-func (g *Grid) GetRune(v Vec) rune {
+func (g *Grid) Rune(v Vec) rune {
 	return g.entries[v].(rune)
 }
-func (g *Grid) GetAt(x, y int) interface{} {
+func (g *Grid) EntryAt(x, y int) interface{} {
 	return g.entries[Vec{X: x, Y: y}]
 }
-func (g *Grid) GetIntAt(x, y int) int {
+func (g *Grid) IntAt(x, y int) int {
 	return g.entries[Vec{X: x, Y: y}].(int)
 }
-func (g *Grid) GetRuneAt(x, y int) rune {
+func (g *Grid) RuneAt(x, y int) rune {
 	return g.entries[Vec{X: x, Y: y}].(rune)
 }
 
 func (g *Grid) Col(x int) []interface{} {
 	col := make([]interface{}, 1+g.Max.Y-g.Min.Y)
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
-		col[y] = g.GetAt(x, y)
+		col[y] = g.EntryAt(x, y)
 	}
 	return col
 }
@@ -73,7 +73,7 @@ func (g *Grid) Col(x int) []interface{} {
 func (g *Grid) Row(y int) []interface{} {
 	row := make([]interface{}, 1+g.Max.X-g.Min.X)
 	for x := g.Min.X; x <= g.Max.X; x++ {
-		row[x] = g.GetAt(x, y)
+		row[x] = g.EntryAt(x, y)
 	}
 	return row
 }
@@ -84,6 +84,17 @@ func (g *Grid) Set(v Vec, i interface{}) {
 }
 func (g *Grid) SetAt(x, y int, i interface{}) {
 	g.Set(Vec{X: x, Y: y}, i)
+}
+
+func (g *Grid) Fill(v Vec, w, h int, i interface{}) {
+	for y := v.Y; y < v.Y+h; y++ {
+		for x := v.X; x < v.X+w; x++ {
+			g.SetAt(x, y, i)
+		}
+	}
+}
+func (g *Grid) FillAt(x, y, w, h int, i interface{}) {
+	g.Fill(Vec{X: x, Y: y}, w, h, i)
 }
 
 func (g *Grid) InBounds(v Vec) bool {
@@ -106,7 +117,7 @@ func (g *Grid) ForEach(fn func(v Vec, i interface{})) {
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
 			v := Vec{X: x, Y: y}
-			fn(v, g.Get(v))
+			fn(v, g.Entry(v))
 		}
 	}
 }
@@ -121,7 +132,7 @@ func (g *Grid) Print(format string, clear bool) {
 
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
-			fmt.Printf(format, g.GetAt(x, y))
+			fmt.Printf(format, g.EntryAt(x, y))
 		}
 		fmt.Println()
 	}

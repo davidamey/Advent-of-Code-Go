@@ -6,6 +6,11 @@ import (
 )
 
 const (
+	pxOff = ' '
+	pxOn  = '█'
+)
+
+const (
 	// example
 	// gW = 7
 	// gH = 3
@@ -26,7 +31,7 @@ func main() {
 	// g.Print("%c", false)
 
 	g := util.NewGrid()
-	rectWithRune(g, gW, gH, ' ')
+	g.FillAt(0, 0, gW, gH, pxOff)
 
 	lines := util.MustReadFileToLines("input")
 	for _, l := range lines {
@@ -48,7 +53,7 @@ func main() {
 
 	p1 := 0
 	g.ForEach(func(v util.Vec, i interface{}) {
-		if i.(rune) == '#' {
+		if i.(rune) == pxOn {
 			p1++
 		}
 	})
@@ -60,15 +65,7 @@ func main() {
 }
 
 func rect(g *util.Grid, w, h int) {
-	rectWithRune(g, w, h, '#')
-}
-
-func rectWithRune(g *util.Grid, w, h int, r rune) {
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
-			g.SetAt(x, y, r)
-		}
-	}
+	g.FillAt(0, 0, w, h, pxOn)
 }
 
 func rotCol(g *util.Grid, x, n int) {

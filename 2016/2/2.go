@@ -37,7 +37,7 @@ func part1(lines []string) {
 				p = newp
 			}
 		}
-		code[i] = pad.Get(p).(rune)
+		code[i] = pad.Rune(p)
 	}
 
 	fmt.Println("p1=", string(code))

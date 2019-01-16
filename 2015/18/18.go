@@ -78,10 +78,10 @@ func EvolveP2(g *util.Grid) *util.Grid {
 }
 
 func EvolvePoint(g *util.Grid, v util.Vec) rune {
-	sum := RuneToScore(g.GetRune(v))
+	sum := RuneToScore(g.Rune(v))
 	for _, a := range v.Adjacent(true) {
 		if g.InBounds(a) {
-			sum += RuneToScore(g.GetRune(a))
+			sum += RuneToScore(g.Rune(a))
 		}
 	}
 
@@ -89,7 +89,7 @@ func EvolvePoint(g *util.Grid, v util.Vec) rune {
 	case 3:
 		return '#'
 	case 4:
-		return g.GetRune(v)
+		return g.Rune(v)
 	default:
 		return '.'
 	}
