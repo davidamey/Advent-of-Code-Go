@@ -62,6 +62,22 @@ func (g *Grid) GetRuneAt(x, y int) rune {
 	return g.entries[Vec{X: x, Y: y}].(rune)
 }
 
+func (g *Grid) Col(x int) []interface{} {
+	col := make([]interface{}, 1+g.Max.Y-g.Min.Y)
+	for y := g.Min.Y; y <= g.Max.Y; y++ {
+		col[y] = g.GetAt(x, y)
+	}
+	return col
+}
+
+func (g *Grid) Row(y int) []interface{} {
+	row := make([]interface{}, 1+g.Max.X-g.Min.X)
+	for x := g.Min.X; x <= g.Max.X; x++ {
+		row[x] = g.GetAt(x, y)
+	}
+	return row
+}
+
 func (g *Grid) Set(v Vec, i interface{}) {
 	g.entries[v] = i
 	g.resizeFor(v)
