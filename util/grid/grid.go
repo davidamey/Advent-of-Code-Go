@@ -1,19 +1,20 @@
-package util
+package grid
 
 import (
+	"advent/util/vector"
 	"fmt"
 )
 
 type Grid struct {
-	Min, Max Vec
-	entries  map[Vec]interface{}
+	Min, Max vector.Vec
+	entries  map[vector.Vec]interface{}
 }
 
-func NewGrid() *Grid {
+func New() *Grid {
 	g := &Grid{
-		Min:     NewMaxVec(),
-		Max:     NewMinVec(),
-		entries: make(map[Vec]interface{}),
+		Min:     vector.NewMax(),
+		Max:     vector.NewMin(),
+		entries: make(map[vector.Vec]interface{}),
 	}
 	return g
 }
@@ -22,7 +23,7 @@ func (g *Grid) Clone() *Grid {
 	ng := &Grid{
 		Min:     g.Min,
 		Max:     g.Max,
-		entries: make(map[Vec]interface{}, len(g.entries)),
+		entries: make(map[vector.Vec]interface{}, len(g.entries)),
 	}
 	for v, x := range g.entries {
 		ng.entries[v] = x
@@ -30,7 +31,7 @@ func (g *Grid) Clone() *Grid {
 	return ng
 }
 
-func (g *Grid) resizeFor(v Vec) {
+func (g *Grid) resizeFor(v vector.Vec) {
 	switch {
 	case v.X < g.Min.X:
 		g.Min.X = v.X
@@ -43,23 +44,23 @@ func (g *Grid) resizeFor(v Vec) {
 	}
 }
 
-func (g *Grid) Entry(v Vec) interface{} {
+func (g *Grid) Entry(v vector.Vec) interface{} {
 	return g.entries[v]
 }
-func (g *Grid) Int(v Vec) int {
+func (g *Grid) Int(v vector.Vec) int {
 	return g.entries[v].(int)
 }
-func (g *Grid) Rune(v Vec) rune {
+func (g *Grid) Rune(v vector.Vec) rune {
 	return g.entries[v].(rune)
 }
 func (g *Grid) EntryAt(x, y int) interface{} {
-	return g.entries[Vec{X: x, Y: y}]
+	return g.entries[vector.New(x, y)]
 }
 func (g *Grid) IntAt(x, y int) int {
-	return g.entries[Vec{X: x, Y: y}].(int)
+	return g.entries[vector.New(x, y)].(int)
 }
 func (g *Grid) RuneAt(x, y int) rune {
-	return g.entries[Vec{X: x, Y: y}].(rune)
+	return g.entries[vector.New(x, y)].(rune)
 }
 
 func (g *Grid) Col(x int) []interface{} {
@@ -78,15 +79,15 @@ func (g *Grid) Row(y int) []interface{} {
 	return row
 }
 
-func (g *Grid) Set(v Vec, i interface{}) {
+func (g *Grid) Set(v vector.Vec, i interface{}) {
 	g.entries[v] = i
 	g.resizeFor(v)
 }
 func (g *Grid) SetAt(x, y int, i interface{}) {
-	g.Set(Vec{X: x, Y: y}, i)
+	g.Set(vector.New(x, y), i)
 }
 
-func (g *Grid) Fill(v Vec, w, h int, i interface{}) {
+func (g *Grid) Fill(v vector.Vec, w, h int, i interface{}) {
 	for y := v.Y; y < v.Y+h; y++ {
 		for x := v.X; x < v.X+w; x++ {
 			g.SetAt(x, y, i)
@@ -94,14 +95,14 @@ func (g *Grid) Fill(v Vec, w, h int, i interface{}) {
 	}
 }
 func (g *Grid) FillAt(x, y, w, h int, i interface{}) {
-	g.Fill(Vec{X: x, Y: y}, w, h, i)
+	g.Fill(vector.New(x, y), w, h, i)
 }
 
-func (g *Grid) InBounds(v Vec) bool {
+func (g *Grid) InBounds(v vector.Vec) bool {
 	return v.Within(g.Min, g.Max)
 }
 func (g *Grid) InBoundsAt(x, y int) bool {
-	return g.InBounds(Vec{X: x, Y: y})
+	return g.InBounds(vector.New(x, y))
 }
 
 // func (g *Grid) Corners() []Vec {
@@ -113,10 +114,10 @@ func (g *Grid) InBoundsAt(x, y int) bool {
 // 	}
 // }
 
-func (g *Grid) ForEach(fn func(v Vec, i interface{})) {
+func (g *Grid) ForEach(fn func(v vector.Vec, i interface{})) {
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
-			v := Vec{X: x, Y: y}
+			v := vector.New(x, y)
 			fn(v, g.Entry(v))
 		}
 	}

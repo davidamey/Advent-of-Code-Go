@@ -1,6 +1,7 @@
-package util
+package vector
 
 import (
+	"advent/util"
 	"fmt"
 	"math"
 )
@@ -9,13 +10,13 @@ type Vec struct {
 	X, Y int
 }
 
-func NewVec(x, y int) Vec {
+func New(x, y int) Vec {
 	return Vec{x, y}
 }
-func NewMaxVec() Vec {
+func NewMax() Vec {
 	return Vec{math.MaxInt32, math.MaxInt32}
 }
-func NewMinVec() Vec {
+func NewMin() Vec {
 	return Vec{math.MinInt32, math.MinInt32}
 }
 
@@ -37,7 +38,7 @@ func (v *Vec) Down() Vec {
 }
 
 func (v *Vec) ManhattanTo(to Vec) int {
-	return AbsInt(to.X-v.X) + AbsInt(to.Y-v.Y)
+	return util.AbsInt(to.X-v.X) + util.AbsInt(to.Y-v.Y)
 }
 
 func (v *Vec) Adjacent(withCorners bool) []Vec {

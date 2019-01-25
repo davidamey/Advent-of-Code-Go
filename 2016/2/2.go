@@ -2,6 +2,8 @@ package main
 
 import (
 	"advent/util"
+	"advent/util/grid"
+	"advent/util/vector"
 	"fmt"
 )
 
@@ -18,10 +20,10 @@ func main() {
 func part1(lines []string) {
 	code := make([]rune, len(lines))
 	pad := makePad()
-	p := util.NewVec(1, 1)
+	p := vector.New(1, 1)
 	for i, l := range lines {
 		for _, c := range l {
-			var newp util.Vec
+			var newp vector.Vec
 			switch c {
 			case 'U':
 				newp = p.Up()
@@ -66,8 +68,8 @@ func part2(lines []string) {
 	fmt.Println("p2=", string(code))
 }
 
-func makePad() *util.Grid {
-	pad := util.NewGrid()
+func makePad() *grid.Grid {
+	pad := grid.New()
 	pad.SetAt(0, 0, '1')
 	pad.SetAt(1, 0, '2')
 	pad.SetAt(2, 0, '3')

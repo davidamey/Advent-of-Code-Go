@@ -2,6 +2,8 @@ package main
 
 import (
 	"advent/util"
+	"advent/util/grid"
+	"advent/util/vector"
 	"fmt"
 )
 
@@ -13,7 +15,7 @@ func main() {
 	defer file.Close()
 	lines, _ := util.ReadLines(file)
 
-	initial := util.NewGrid()
+	initial := grid.New()
 	for y, l := range lines {
 		for x, r := range l {
 			initial.SetAt(x, y, r)
@@ -36,7 +38,7 @@ func main() {
 	}
 
 	p1 := 0
-	g1.ForEach(func(v util.Vec, x interface{}) {
+	g1.ForEach(func(v vector.Vec, x interface{}) {
 		if x.(rune) == '#' {
 			p1++
 		}
@@ -44,7 +46,7 @@ func main() {
 	fmt.Println("p1=", p1)
 
 	p2 := 0
-	g2.ForEach(func(v util.Vec, x interface{}) {
+	g2.ForEach(func(v vector.Vec, x interface{}) {
 		if x.(rune) == '#' {
 			p2++
 		}
@@ -52,23 +54,23 @@ func main() {
 	fmt.Println("p2=", p2)
 }
 
-func EvolveP1(g *util.Grid) *util.Grid {
+func EvolveP1(g *grid.Grid) *grid.Grid {
 	ng := g.Clone()
-	g.ForEach(func(v util.Vec, x interface{}) {
+	g.ForEach(func(v vector.Vec, x interface{}) {
 		ng.Set(v, EvolvePoint(g, v))
 	})
 	return ng
 }
 
-func EvolveP2(g *util.Grid) *util.Grid {
+func EvolveP2(g *grid.Grid) *grid.Grid {
 	ng := g.Clone()
-	g.ForEach(func(v util.Vec, x interface{}) {
+	g.ForEach(func(v vector.Vec, x interface{}) {
 		switch v {
 		case
-			util.Vec{X: g.Min.X, Y: g.Min.Y},
-			util.Vec{X: g.Min.X, Y: g.Max.Y},
-			util.Vec{X: g.Max.X, Y: g.Min.Y},
-			util.Vec{X: g.Max.X, Y: g.Max.Y}:
+			vector.Vec{X: g.Min.X, Y: g.Min.Y},
+			vector.Vec{X: g.Min.X, Y: g.Max.Y},
+			vector.Vec{X: g.Max.X, Y: g.Min.Y},
+			vector.Vec{X: g.Max.X, Y: g.Max.Y}:
 			return
 		default:
 			ng.Set(v, EvolvePoint(g, v))
@@ -77,7 +79,7 @@ func EvolveP2(g *util.Grid) *util.Grid {
 	return ng
 }
 
-func EvolvePoint(g *util.Grid, v util.Vec) rune {
+func EvolvePoint(g *grid.Grid, v vector.Vec) rune {
 	sum := RuneToScore(g.Rune(v))
 	for _, a := range v.Adjacent(true) {
 		if g.InBounds(a) {
