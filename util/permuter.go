@@ -10,6 +10,11 @@ type StringPermuter struct {
 	perm  []int
 }
 
+type BytePermuter struct {
+	slice []byte
+	perm  []int
+}
+
 func NewIntPermuter(slice []int) *IntPermuter {
 	return &IntPermuter{
 		slice: slice,
@@ -19,6 +24,13 @@ func NewIntPermuter(slice []int) *IntPermuter {
 
 func NewStringPermuter(slice []string) *StringPermuter {
 	return &StringPermuter{
+		slice: slice,
+		perm:  make([]int, len(slice)),
+	}
+}
+
+func NewBytePermuter(slice []byte) *BytePermuter {
+	return &BytePermuter{
 		slice: slice,
 		perm:  make([]int, len(slice)),
 	}
@@ -54,6 +66,21 @@ func (p *StringPermuter) NextPerm() []string {
 	return result
 }
 
+func (p *BytePermuter) NextPerm() []byte {
+	if p.perm[0] >= len(p.perm) {
+		return nil
+	}
+
+	result := make([]byte, len(p.slice))
+	copy(result, p.slice)
+	for i, v := range p.perm {
+		result[i], result[i+v] = result[i+v], result[i]
+	}
+
+	cyclePerm(p.perm)
+	return result
+}
+
 func (p *IntPermuter) Permutations() chan []int {
 	ch := make(chan []int)
 
@@ -69,6 +96,19 @@ func (p *IntPermuter) Permutations() chan []int {
 
 func (p *StringPermuter) Permutations() chan []string {
 	ch := make(chan []string)
+
+	go func() {
+		defer close(ch)
+		for next := p.NextPerm(); next != nil; next = p.NextPerm() {
+			ch <- next
+		}
+	}()
+
+	return ch
+}
+
+func (p *BytePermuter) Permutations() chan []byte {
+	ch := make(chan []byte)
 
 	go func() {
 		defer close(ch)
