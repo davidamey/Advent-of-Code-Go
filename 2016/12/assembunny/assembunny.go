@@ -20,12 +20,15 @@ func (r Registers) String() string {
 
 type Program struct {
 	instructs []Instruction
+	Out       []int
 }
 
 type Instruction func(r *Registers, i int) (newi int)
 
 func Compile(lines []string) *Program {
-	p := &Program{make([]Instruction, len(lines))}
+	p := &Program{
+		instructs: make([]Instruction, len(lines)),
+	}
 	for i := range lines {
 		switch lines[i][:3] {
 		case "cpy":
@@ -36,6 +39,8 @@ func Compile(lines []string) *Program {
 			p.instructs[i] = compileDEC(lines[i][4:])
 		case "jnz":
 			p.instructs[i] = compileJNZ(lines[i][4:])
+		case "out":
+			p.instructs[i] = compileOUT(lines[i][4:], p)
 		}
 	}
 	return p
@@ -47,6 +52,19 @@ func (p *Program) Run(r *Registers, debug bool) {
 			fmt.Printf("i: %2d, registers: %s\n", i, r)
 		}
 		i = p.instructs[i](r, i)
+	}
+}
+
+func (p *Program) RunWithOut(r *Registers, debug bool, maxOut int) {
+	p.Out = make([]int, 0, maxOut)
+	for i := 0; i >= 0 && i < len(p.instructs); {
+		if debug {
+			fmt.Printf("i: %2d, registers: %s\n", i, r)
+		}
+		i = p.instructs[i](r, i)
+		if len(p.Out) >= maxOut {
+			return
+		}
 	}
 }
 
@@ -101,6 +119,24 @@ func compileJNZ(raw string) Instruction {
 		return func(r *Registers, i int) (newi int) {
 			if r[z] != 0 {
 				return i + y
+			}
+			return i + 1
+		}
+	}
+}
+
+func compileOUT(raw string, p *Program) Instruction {
+	if t, x := parseInput(raw); t == inputTypeVal {
+		return func(r *Registers, i int) (newi int) {
+			if p.Out != nil {
+				p.Out = append(p.Out, x)
+			}
+			return i + 1
+		}
+	} else {
+		return func(r *Registers, i int) (newi int) {
+			if p.Out != nil {
+				p.Out = append(p.Out, r[x])
 			}
 			return i + 1
 		}
