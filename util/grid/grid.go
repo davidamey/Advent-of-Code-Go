@@ -32,14 +32,16 @@ func (g *Grid) Clone() *Grid {
 }
 
 func (g *Grid) resizeFor(v vector.Vec) {
-	switch {
-	case v.X < g.Min.X:
+	if v.X < g.Min.X {
 		g.Min.X = v.X
-	case v.Y < g.Min.Y:
+	}
+	if v.Y < g.Min.Y {
 		g.Min.Y = v.Y
-	case v.X > g.Max.X:
+	}
+	if v.X > g.Max.X {
 		g.Max.X = v.X
-	case v.Y > g.Max.Y:
+	}
+	if v.Y > g.Max.Y {
 		g.Max.Y = v.Y
 	}
 }
