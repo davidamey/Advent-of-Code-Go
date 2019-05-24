@@ -2,6 +2,7 @@ package main
 
 import (
 	"advent/util"
+	"advent/util/vector"
 	"fmt"
 	"image"
 	"image/color"
@@ -20,7 +21,7 @@ func main() {
 	lines, _ := util.ReadLines(file)
 
 	g := NewGrid()
-	g.Set(util.Vec{X: 500, Y: 0}, '+')
+	g.Set(vector.Vec{X: 500, Y: 0}, '+')
 	minY := math.MaxInt32
 	maxY := math.MinInt32
 	for _, l := range lines {
@@ -38,7 +39,7 @@ func main() {
 			}
 
 			for y := v2; y <= v3; y++ {
-				g.Set(util.Vec{X: v1, Y: y}, '#')
+				g.Set(vector.Vec{X: v1, Y: y}, '#')
 			}
 		} else {
 			if v1 < minY {
@@ -49,7 +50,7 @@ func main() {
 			}
 
 			for x := v2; x <= v3; x++ {
-				g.Set(util.Vec{X: x, Y: v1}, '#')
+				g.Set(vector.Vec{X: x, Y: v1}, '#')
 			}
 		}
 	}
@@ -58,8 +59,8 @@ func main() {
 	// fmt.Println(g.minY)
 	// os.Exit(0)
 
-	flow := []util.Vec{
-		util.Vec{X: 500, Y: 1},
+	flow := []vector.Vec{
+		vector.Vec{X: 500, Y: 1},
 	}
 
 	for ; len(flow) > 0; dump(g) {
@@ -80,7 +81,7 @@ func main() {
 
 		// Flow left and right as far as possible
 		// fmt.Printf("flowing left from (%d, %d)=%c\n", w.X, w.Y, g.Get(w))
-		var row []util.Vec
+		var row []vector.Vec
 		contained := true
 		l := w.Left()
 		for !g.Blocked(l) {
@@ -128,7 +129,7 @@ func main() {
 	standingCount := 0
 	for y := minY; y <= maxY; y++ {
 		for x := g.minX; x <= g.maxX; x++ {
-			w := g.Get(util.Vec{X: x, Y: y})
+			w := g.Get(vector.Vec{X: x, Y: y})
 			if w == '~' || w == '|' {
 				waterCount++
 			}
@@ -150,12 +151,12 @@ func dump(g *Grid) {
 	// }
 	// pngCount++
 
-	// g.Print(true)
-	// fmt.Scanln()
+	g.Print(true)
+	fmt.Scanln()
 }
 
 type Grid struct {
-	current                *util.Vec
+	current                *vector.Vec
 	minX, minY, maxX, maxY int
 	entries                map[string]rune
 }
@@ -170,14 +171,14 @@ func NewGrid() *Grid {
 	}
 }
 
-func (g *Grid) Get(p util.Vec) rune {
+func (g *Grid) Get(p vector.Vec) rune {
 	if val, ok := g.entries[fmt.Sprintf("%d,%d", p.X, p.Y)]; ok {
 		return val
 	}
 	return '.'
 }
 
-func (g *Grid) Set(p util.Vec, val rune) {
+func (g *Grid) Set(p vector.Vec, val rune) {
 	// fmt.Printf("setting (%d, %d) to %c\n", x, y, val)
 	if p.X < g.minX {
 		g.minX = p.X
@@ -194,20 +195,20 @@ func (g *Grid) Set(p util.Vec, val rune) {
 	g.entries[fmt.Sprintf("%d,%d", p.X, p.Y)] = val
 }
 
-func (g *Grid) Sand(p util.Vec) bool {
+func (g *Grid) Sand(p vector.Vec) bool {
 	r := g.Get(p)
 	return r == '.' // || r == '|'
 }
 
-func (g *Grid) Flowing(p util.Vec) bool {
+func (g *Grid) Flowing(p vector.Vec) bool {
 	return g.Get(p) == '|'
 }
 
-func (g *Grid) Blocked(p util.Vec) bool {
+func (g *Grid) Blocked(p vector.Vec) bool {
 	return g.Get(p) == '~' || g.Get(p) == '#'
 }
 
-func (g *Grid) OutOfBounds(p util.Vec) bool {
+func (g *Grid) OutOfBounds(p vector.Vec) bool {
 	// Cheeky <= as the water source is at 0
 	return p.Y <= g.minY || p.Y > g.maxY
 }
@@ -221,7 +222,7 @@ func (g *Grid) Print(clear bool) {
 	fmt.Println()
 	for y := g.minY; y <= g.maxY; y++ {
 		for x := g.minX - 1; x <= g.maxX+1; x++ {
-			p := util.Vec{X: x, Y: y}
+			p := vector.Vec{X: x, Y: y}
 			if g.current != nil && x == g.current.X && y == g.current.Y {
 				fmt.Printf("\033[%d;%dm%c\033[0m", 92, 49, g.Get(p))
 				continue
@@ -239,7 +240,7 @@ func (g *Grid) SaveToFile() {
 
 	for y := g.minY; y <= g.maxY; y++ {
 		for x := g.minX - 1; x <= g.maxX+1; x++ {
-			p := util.Vec{X: x, Y: y}
+			p := vector.Vec{X: x, Y: y}
 			switch g.Get(p) {
 			case '+':
 				img.Set(x, y, color.RGBA{0, 255, 0, 255})
