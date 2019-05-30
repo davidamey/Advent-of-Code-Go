@@ -116,6 +116,16 @@ func (g *Grid) InBoundsAt(x, y int) bool {
 // 	}
 // }
 
+func (g *Grid) SubGrid(x, y, w, h int) *Grid {
+	sg := New()
+	for sx := 0; sx < w; sx++ {
+		for sy := 0; sy < h; sy++ {
+			sg.SetAt(sx, sy, g.EntryAt(x+sx, y+sy))
+		}
+	}
+	return sg
+}
+
 func (g *Grid) ForEach(fn func(v vector.Vec, i interface{})) {
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
@@ -139,4 +149,8 @@ func (g *Grid) Print(format string, clear bool) {
 		}
 		fmt.Println()
 	}
+}
+
+func (g *Grid) PrintRunes() {
+	g.Print("%c", false)
 }
