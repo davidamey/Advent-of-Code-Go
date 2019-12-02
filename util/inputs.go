@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 )
 
 func OpenExample() (*os.File, error) {
@@ -22,7 +23,7 @@ func OpenFile(name string) (*os.File, error) {
 
 	// If we're in 20xx base, then look in the appropriate 'day' folder
 	switch path.Base(dir) {
-	case "2015", "2016", "2017", "2018":
+	case "2015", "2016", "2017", "2018", "2019":
 		dir = path.Join(dir, path.Base(os.Args[0]))
 	}
 
@@ -90,6 +91,16 @@ func MustReadFileToInts(filename string) []int {
 	ints, err := ReadLinesToInts(file)
 	if err != nil {
 		panic(err)
+	}
+	return ints
+}
+
+func MustReadCSInts(filename string) []int {
+	raw := string(MustReadFile(filename))
+	var ints []int
+	for _, c := range strings.Split(raw, ",") {
+		i, _ := strconv.Atoi(c)
+		ints = append(ints, i)
 	}
 	return ints
 }
