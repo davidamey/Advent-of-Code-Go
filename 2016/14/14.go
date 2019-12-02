@@ -1,7 +1,7 @@
 package main
 
 import (
-	"advent/util"
+	"advent-of-code-go/util"
 	"crypto/md5"
 	"fmt"
 	"strconv"

@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"local/advent/util"
+
+	"advent-of-code-go/util"
 )
 
 func main() {

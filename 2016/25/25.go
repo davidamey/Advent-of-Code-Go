@@ -2,7 +2,7 @@ package main
 
 import (
 	"advent/2016/12/assembunny"
-	"advent/util"
+	"advent-of-code-go/util"
 	"fmt"
 	"time"
 )

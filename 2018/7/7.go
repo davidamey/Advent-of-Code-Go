@@ -3,7 +3,7 @@
 package main
 
 import (
-	"advent/util"
+	"advent-of-code-go/util"
 	"fmt"
 )
 
