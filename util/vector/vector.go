@@ -24,6 +24,14 @@ func (v Vec) String() string {
 	return fmt.Sprintf("(%d, %d)", v.X, v.Y)
 }
 
+func (v *Vec) IsOrigin() bool {
+	return v.X == 0 && v.Y == 0
+}
+
+func (v *Vec) EqualTo(v2 Vec) bool {
+	return v.X == v2.X && v.Y == v2.Y
+}
+
 func (v *Vec) Left() Vec {
 	return Vec{v.X - 1, v.Y}
 }
@@ -35,6 +43,10 @@ func (v *Vec) Up() Vec {
 }
 func (v *Vec) Down() Vec {
 	return Vec{v.X, v.Y + 1}
+}
+
+func (v *Vec) Manhattan() int {
+	return util.AbsInt(v.X) + util.AbsInt(v.Y)
 }
 
 func (v *Vec) ManhattanTo(to Vec) int {

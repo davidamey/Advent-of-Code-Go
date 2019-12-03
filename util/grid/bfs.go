@@ -1,8 +1,6 @@
 package grid
 
-import (
-	"advent/util/vector"
-)
+import vector "advent-of-code-go/util/vector"
 
 type PathNode struct {
 	Pos    vector.Vec

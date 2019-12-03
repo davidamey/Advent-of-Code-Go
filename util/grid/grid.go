@@ -1,7 +1,7 @@
 package grid
 
 import (
-	"advent/util/vector"
+	vector "advent-of-code-go/util/vector"
 	"fmt"
 )
 
