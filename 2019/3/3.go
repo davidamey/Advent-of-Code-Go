@@ -2,11 +2,13 @@ package main
 
 import (
 	"advent-of-code-go/util"
-	"advent-of-code-go/util/grid"
 	"advent-of-code-go/util/vector"
 	"fmt"
+	"strconv"
 	"strings"
 )
+
+type path map[vector.Vec]int
 
 func main() {
 	// lines := util.MustReadFileToLines("example")
@@ -15,82 +17,59 @@ func main() {
 	// lines := util.MustReadFileToLines("example4")
 	lines := util.MustReadFileToLines("input")
 
-	g1, g2 := grid.New(), grid.New()
-	addWire(g1, lines[0])
-	addWire(g2, lines[1])
+	p1, p2 := makePath(lines[0]), makePath(lines[1])
 
-	p1, p2 := p1p2(g1, g2)
-	fmt.Println("p1=", p1)
-	fmt.Println("p2=", p2)
+	sol1, sol2 := solve(p1, p2)
+	fmt.Println("p1=", sol1)
+	fmt.Println("p2=", sol2)
 }
 
-func p1p2(g1, g2 *grid.Grid) (p1, p2 int) {
+func solve(p1, p2 path) (sol1, sol2 int) {
 	var vs []vector.Vec
-	g1.ForEach(func(v vector.Vec, x interface{}) {
-		if !v.IsOrigin() && x != nil && g2.Entry(v) != nil {
+	for v := range p1 {
+		if _, exists := p2[v]; exists {
 			vs = append(vs, v)
 		}
-	})
+	}
 
-	p1, p2 = 1<<16, 1<<16
+	sol1, sol2 = 1<<16, 1<<16
 	for _, v := range vs {
-		//p1
-		if d := v.Manhattan(); d < p1 {
-			p1 = d
+		// part 1
+		if d := v.Manhattan(); d < sol1 {
+			sol1 = d
 		}
 
-		//p2
-		d1 := g1.Entry(v).(int)
-		d2 := g2.Entry(v).(int)
-		if d := d1 + d2; d < p2 {
-			p2 = d
+		// part 2
+		d1, d2 := p1[v], p2[v]
+		if d := d1 + d2; d < sol2 {
+			sol2 = d
 		}
 	}
 	return
 }
 
-func addWire(g *grid.Grid, path string) {
+func makePath(wire string) (p path) {
+	dirs := map[byte]vector.Vec{
+		'U': vector.New(0, -1),
+		'R': vector.New(1, 0),
+		'D': vector.New(0, 1),
+		'L': vector.New(-1, 0),
+	}
+
+	p = make(path)
 	v := vector.New(0, 0)
 	l := 1
-	for _, p := range strings.Split(path, ",") {
-		var d rune
-		var x int
-		fmt.Sscanf(p, "%c%d", &d, &x)
-
+	for _, w := range strings.Split(wire, ",") {
+		d := w[0]
+		x, _ := strconv.Atoi(w[1:])
 		for i := 0; i < x; i++ {
-			switch d {
-			case 'U':
-				v.Y--
-			case 'R':
-				v.X++
-			case 'D':
-				v.Y++
-			case 'L':
-				v.X--
-			}
+			v.Add(dirs[d])
 
-			if g.Entry(v) == nil {
-				g.Set(v, l)
+			if _, exists := p[v]; !exists {
+				p[v] = l
 			}
 			l++
 		}
 	}
-}
-
-func print(g *grid.Grid) {
-	for y := g.Min.Y; y <= g.Max.Y; y++ {
-		for x := g.Min.X; x <= g.Max.X; x++ {
-			if x == 0 && y == 0 {
-				fmt.Print(" o,")
-				continue
-			}
-			e := g.EntryAt(x, y)
-			if e != nil {
-				fmt.Printf("%2d,", e)
-			} else {
-				fmt.Print("  ,")
-			}
-		}
-		fmt.Println()
-	}
+	return
 }
