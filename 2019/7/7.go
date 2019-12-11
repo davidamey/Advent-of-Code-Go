@@ -20,17 +20,17 @@ func main() {
 }
 
 func p1(data []int) int {
-	prog := intcode.New(data, false)
+	prog := intcode.Program(data)
 	maxE := math.MinInt16
 	// var maxEperm []int
 	for p := range util.NewIntPermuter([]int{0, 1, 2, 3, 4}).Permutations() {
-		a := prog.Run(p[0], 0)[0]
-		b := prog.Run(p[1], a)[0]
-		c := prog.Run(p[2], b)[0]
-		d := prog.Run(p[3], c)[0]
-		e := prog.Run(p[4], d)[0]
-		if e > maxE {
-			maxE = e
+		a := prog.Run(p[0], 0)
+		b := prog.Run(p[1], a[0])
+		c := prog.Run(p[2], b[0])
+		d := prog.Run(p[3], c[0])
+		e := prog.Run(p[4], d[0])
+		if e[0] > maxE {
+			maxE = e[0]
 			// maxEperm = p
 		}
 	}
@@ -43,7 +43,7 @@ func p2(data []int) (maxV int) {
 	count := 5
 	chanSize := 2
 
-	prog := intcode.New(data, false)
+	prog := intcode.Program(data)
 	for p := range util.NewIntPermuter([]int{5, 6, 7, 8, 9}).Permutations() {
 		in := make(chan int, chanSize)
 		in <- p[0]
@@ -67,7 +67,6 @@ func p2(data []int) (maxV int) {
 				} else {
 					prog.RunBuf(strconv.Itoa(i), pipes[i-1], pipes[i])
 				}
-				close(pipes[i])
 			}(i)
 		}
 

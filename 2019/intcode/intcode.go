@@ -1,115 +1,120 @@
 package intcode
 
-import "fmt"
+type Program []int
 
-type Interpreter struct {
-	// id      string
-	debug   bool
-	program []int
-}
-
-func New(prog []int, debug bool) *Interpreter {
-	return &Interpreter{
-		program: append([]int(nil), prog...),
-		debug:   debug,
-	}
-}
-
-func (itp *Interpreter) log(a ...interface{}) {
-	if itp.debug {
-		fmt.Println(a...)
-	}
-}
-
-func (itp *Interpreter) Run(input ...int) (result []int) {
+func (p Program) Run(input ...int) (result []int) {
 	in := make(chan int, len(input))
 	out := make(chan int)
 	for _, i := range input {
 		in <- i
 	}
-	go func() {
-		itp.RunBuf("itp", in, out)
-		close(in)
-		close(out)
-	}()
+	close(in)
+	go p.RunBuf("c", in, out)
 	for o := range out {
 		result = append(result, o)
 	}
 	return
 }
 
-func (itp *Interpreter) RunBuf(id string, in, out chan int) (code int) {
-	itp.log(id, "starting")
-	mem := append([]int(nil), itp.program...)
-
-	for i := 0; mem[i] != 99; {
-		oc, modes := parseInstruct(mem[i])
-
-		switch oc {
+func (p Program) RunBuf(id string, in <-chan int, out chan<- int) {
+	r := newRunner(p)
+	for r.current() != 99 {
+		switch r.parseInstruct() {
 		case 1:
-			mem[mem[i+3]] = getVal(mem, i+1, modes[0]) + getVal(mem, i+2, modes[1])
-			i += 4
+			r.set(3, r.get(1)+r.get(2))
+			r.pos += 4
 		case 2:
-			mem[mem[i+3]] = getVal(mem, i+1, modes[0]) * getVal(mem, i+2, modes[1])
-			i += 4
+			r.set(3, r.get(1)*r.get(2))
+			r.pos += 4
 		case 3:
-			v := <-in
-			itp.log(id, "in:", v)
-			mem[mem[i+1]] = v
-			i += 2
+			r.set(1, <-in)
+			r.pos += 2
 		case 4:
-			v := getVal(mem, i+1, modes[0])
-			itp.log(id, "out:", v)
-			out <- v
-			i += 2
+			out <- r.get(1)
+			r.pos += 2
 		case 5:
-			if getVal(mem, i+1, modes[0]) != 0 {
-				i = getVal(mem, i+2, modes[1])
+			if r.get(1) != 0 {
+				r.pos = r.get(2)
 			} else {
-				i += 3
+				r.pos += 3
 			}
 		case 6:
-			if getVal(mem, i+1, modes[0]) == 0 {
-				i = getVal(mem, i+2, modes[1])
+			if r.get(1) == 0 {
+				r.pos = r.get(2)
 			} else {
-				i += 3
+				r.pos += 3
 			}
 		case 7:
-			if getVal(mem, i+1, modes[0]) < getVal(mem, i+2, modes[1]) {
-				mem[mem[i+3]] = 1
+			if r.get(1) < r.get(2) {
+				r.set(3, 1)
 			} else {
-				mem[mem[i+3]] = 0
+				r.set(3, 0)
 			}
-			i += 4
+			r.pos += 4
 		case 8:
-			if getVal(mem, i+1, modes[0]) == getVal(mem, i+2, modes[1]) {
-				mem[mem[i+3]] = 1
+			if r.get(1) == r.get(2) {
+				r.set(3, 1)
 			} else {
-				mem[mem[i+3]] = 0
+				r.set(3, 0)
 			}
-			i += 4
+			r.pos += 4
+		case 9:
+			r.relBase += r.get(1)
+			r.pos += 2
 		default:
 			panic("unknown opcode")
 		}
 	}
-
-	itp.log(id, "exiting", mem[0])
-	return mem[0]
+	close(out)
 }
 
-func parseInstruct(inst int) (oc int, modes []int) {
+type runner struct {
+	memory  []int
+	relBase int
+	pos     int
+	modes   [4]int
+}
+
+func newRunner(p Program) *runner {
+	r := &runner{
+		memory: make([]int, 10000),
+	}
+	copy(r.memory, p)
+	return r
+}
+
+func (r *runner) current() int {
+	return r.memory[r.pos]
+}
+
+func (r *runner) parseInstruct() (oc int) {
+	inst := r.current()
 	oc = inst % 100 // last 2 digits
 	inst /= 100
 	for i := 0; i < 4; i++ {
-		modes = append(modes, inst%10)
+		r.modes[i] = inst % 10
 		inst /= 10
 	}
 	return
 }
 
-func getVal(mem []int, ref, mode int) int {
-	if mode == 1 {
-		return mem[ref]
+func (r *runner) get(i int) int {
+	return r.memory[r.getRef(i)]
+}
+
+func (r *runner) set(i, val int) {
+	r.memory[r.getRef(i)] = val
+}
+
+func (r *runner) getRef(i int) int {
+	switch r.modes[i-1] {
+	case 0: // position
+		return r.memory[r.pos+i]
+	case 1: // immediate
+		return r.pos + i
+	case 2: // relative
+		return r.relBase + r.memory[r.pos+i]
+	default:
+		panic("unknown mode")
 	}
-	return mem[mem[ref]]
 }
