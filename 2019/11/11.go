@@ -18,7 +18,7 @@ func p1(p intcode.Program) {
 	pIn, pOut := make(chan int), make(chan int, 2)
 	running := true
 	go func() {
-		p.RunBuf("prog", pIn, pOut)
+		p.RunBuf(pIn, pOut)
 		close(pIn)
 		running = false
 	}()
@@ -39,7 +39,7 @@ func p2(p intcode.Program) {
 	pIn, pOut := make(chan int), make(chan int, 2)
 	running := true
 	go func() {
-		p.RunBuf("prog", pIn, pOut)
+		p.RunBuf(pIn, pOut)
 		close(pIn)
 		running = false
 	}()

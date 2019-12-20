@@ -45,7 +45,7 @@ func p2(prog intcode.Program) (score int) {
 
 	prog[0] = 2
 	go func() {
-		prog.RunBuf("arcade", g.in, g.out)
+		prog.RunBuf(g.in, g.out)
 		g.running = false
 	}()
 

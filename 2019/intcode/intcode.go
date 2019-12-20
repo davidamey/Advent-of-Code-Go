@@ -9,14 +9,14 @@ func (p Program) Run(input ...int) (result []int) {
 		in <- i
 	}
 	close(in)
-	go p.RunBuf("c", in, out)
+	go p.RunBuf(in, out)
 	for o := range out {
 		result = append(result, o)
 	}
 	return
 }
 
-func (p Program) RunBuf(id string, in <-chan int, out chan<- int) {
+func (p Program) RunBuf(in <-chan int, out chan<- int) {
 	r := newRunner(p)
 	for r.current() != 99 {
 		switch r.parseInstruct() {

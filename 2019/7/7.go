@@ -5,7 +5,6 @@ import (
 	"advent-of-code-go/util"
 	"fmt"
 	"math"
-	"strconv"
 	"sync"
 )
 
@@ -63,9 +62,9 @@ func p2(data []int) (maxV int) {
 		for i := range pipes {
 			go func(i int) {
 				if i == 0 {
-					prog.RunBuf(strconv.Itoa(i), in, pipes[i])
+					prog.RunBuf(in, pipes[i])
 				} else {
-					prog.RunBuf(strconv.Itoa(i), pipes[i-1], pipes[i])
+					prog.RunBuf(pipes[i-1], pipes[i])
 				}
 			}(i)
 		}
