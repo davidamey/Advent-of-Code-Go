@@ -2,6 +2,17 @@ package intcode
 
 type Program []int
 
+func (p Program) RunScript(script []string) (result []int) {
+	var ascii []int
+	for _, l := range script {
+		for _, c := range l {
+			ascii = append(ascii, int(c))
+		}
+		ascii = append(ascii, 10)
+	}
+	return p.Run(ascii...)
+}
+
 func (p Program) Run(input ...int) (result []int) {
 	in := make(chan int, len(input))
 	out := make(chan int)
