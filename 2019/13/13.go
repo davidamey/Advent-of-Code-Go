@@ -5,7 +5,6 @@ import (
 	"advent-of-code-go/util"
 	"advent-of-code-go/util/grid"
 	"fmt"
-	"sync"
 	"time"
 )
 
@@ -49,33 +48,26 @@ func p2(prog intcode.Program) (score int) {
 		g.running = false
 	}()
 
-	var wg sync.WaitGroup
-	wg.Add(1)
-	go func() {
-		defer wg.Done()
-
-		var e [3]int
-		read := 0
-		for g.running {
-			select {
-			case g.in <- g.getJoyDir():
-			case v := <-g.out:
-				e[read] = v
-				read++
-				if read == 3 {
-					read = 0
-					g.parseEntity(e)
-				}
+	var e [3]int
+	read := 0
+	for g.running {
+		select {
+		case g.in <- g.getJoyDir():
+		case v := <-g.out:
+			e[read] = v
+			read++
+			if read == 3 {
+				read = 0
+				g.parseEntity(e)
 			}
-
-			// // print:
-			// g.grid.Print("%c", true)
-			// fmt.Println("score=", g.score)
-			// time.Sleep(10 * time.Millisecond)
 		}
-	}()
 
-	wg.Wait()
+		// // print:
+		// g.grid.Print("%c", true)
+		// fmt.Println("score=", g.score)
+		// time.Sleep(10 * time.Millisecond)
+	}
+
 	return g.score
 }
 

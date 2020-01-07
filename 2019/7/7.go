@@ -5,7 +5,6 @@ import (
 	"advent-of-code-go/util"
 	"fmt"
 	"math"
-	"sync"
 )
 
 func main() {
@@ -58,7 +57,6 @@ func p2(data []int) (maxV int) {
 			}
 		}
 
-		var wg sync.WaitGroup
 		for i := range pipes {
 			go func(i int) {
 				if i == 0 {
@@ -70,15 +68,10 @@ func p2(data []int) (maxV int) {
 		}
 
 		lastV := 0
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			for v := range pipes[count-1] {
-				lastV = v
-				in <- v
-			}
-		}()
-		wg.Wait()
+		for v := range pipes[count-1] {
+			lastV = v
+			in <- v
+		}
 
 		if lastV > maxV {
 			maxV = lastV
