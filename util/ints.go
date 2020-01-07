@@ -45,14 +45,27 @@ func DigitsToInt(digits []int) (x int) {
 	return
 }
 
-func Pow(a, b int) (result int) {
-	result = 1
-	for 0 != b {
-		if 0 != (b & 1) {
-			result *= a
+func Pow(base, pow int) int {
+	r := 1
+	for pow > 0 {
+		if pow&1 != 0 {
+			r *= base
 		}
-		b >>= 1
-		a *= a
+		pow >>= 1
+		base *= base
+	}
+	return r
+}
+
+func PowMod(base, pow, mod int) (r int) {
+	base = base % mod
+	r = 1
+	for pow > 0 {
+		if pow&1 != 0 {
+			r = (r * base) % mod
+		}
+		pow >>= 1
+		base *= base
 	}
 	return
 }
