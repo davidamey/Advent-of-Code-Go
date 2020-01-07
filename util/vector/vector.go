@@ -79,12 +79,10 @@ func (v *Vec) Within(b1, b2 Vec) bool {
 		v.Y >= b1.Y && v.Y <= b2.Y
 }
 
-func (v1 *Vec) Add(v2 Vec) {
-	v1.X += v2.X
-	v1.Y += v2.Y
+func (v Vec) Add(w Vec) Vec {
+	return Vec{v.X + w.X, v.Y + w.Y}
 }
 
-func (v1 *Vec) Subtract(v2 Vec) {
-	v1.X -= v2.X
-	v1.Y -= v2.Y
+func (v Vec) Sub(w Vec) Vec {
+	return Vec{v.X - w.X, v.Y - w.Y}
 }

@@ -26,7 +26,7 @@ func main() {
 
 	for {
 		c.steps++
-		c.p.Add(c.v)
+		c.p = c.p.Add(c.v)
 		ch := g.Rune(c.p)
 
 		if ch == ' ' {

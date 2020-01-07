@@ -45,7 +45,7 @@ func p1(g *grid.Grid) (p1 int) {
 			g.Set(c.p, '#')
 			p1++
 		}
-		c.p.Add(c.v)
+		c.p = c.p.Add(c.v)
 	}
 	return
 }
@@ -76,7 +76,7 @@ func p2(g *grid.Grid) (p2 int) {
 			c.v.X, c.v.Y = -c.v.X, -c.v.Y // reverse
 			g.Set(c.p, '.')
 		}
-		c.p.Add(c.v)
+		c.p = c.p.Add(c.v)
 	}
 	return
 }
@@ -88,8 +88,8 @@ type carrier struct {
 func printGrid(g *grid.Grid, c *carrier) {
 	g = g.Clone()
 
-	g.Min.Add(vector.New(-3, -3))
-	g.Max.Add(vector.New(3, 3))
+	g.Min = g.Min.Add(vector.New(-3, -3))
+	g.Max = g.Max.Add(vector.New(3, 3))
 
 	printCloseBracket := false
 	for y := g.Min.Y; y <= g.Max.Y; y++ {

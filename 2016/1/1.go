@@ -2,6 +2,7 @@ package main
 
 import (
 	"advent-of-code-go/util"
+	"advent-of-code-go/util/vector"
 	"fmt"
 	"io/ioutil"
 	"strings"
@@ -27,29 +28,29 @@ func main() {
 }
 
 func p1(input string) int {
-	p := util.NewVec(0, 0)
-	v := util.NewVec(0, -1)
+	p := vector.New(0, 0)
+	v := vector.New(0, -1)
 	for _, m := range ParseMoves(input) {
 		turn(m.Turn, &v)
 		for i := 0; i < m.Walk; i++ {
-			p.Add(v)
+			p = p.Add(v)
 		}
 	}
 
-	return p.ManhattanTo(util.NewVec(0, 0))
+	return p.ManhattanTo(vector.New(0, 0))
 }
 
 func p2(input string) int {
-	p := util.NewVec(0, 0)
-	v := util.NewVec(0, -1)
-	places := make(map[util.Vec]int)
+	p := vector.New(0, 0)
+	v := vector.New(0, -1)
+	places := make(map[vector.Vec]int)
 	for _, m := range ParseMoves(input) {
 		turn(m.Turn, &v)
 		for i := 0; i < m.Walk; i++ {
-			p.Add(v)
+			p = p.Add(v)
 			places[p]++
 			if places[p] == 2 {
-				return p.ManhattanTo(util.NewVec(0, 0))
+				return p.ManhattanTo(vector.New(0, 0))
 			}
 		}
 	}
@@ -57,7 +58,7 @@ func p2(input string) int {
 	return -1
 }
 
-func turn(dir rune, v *util.Vec) {
+func turn(dir rune, v *vector.Vec) {
 	switch dir {
 	case 'R':
 		v.X, v.Y = -v.Y, v.X

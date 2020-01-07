@@ -84,5 +84,5 @@ func act(g *grid.Grid, rP, rV *vector.Vec, pIn, pOut chan int) {
 	} else { // right
 		rV.X, rV.Y = -rV.Y, rV.X
 	}
-	rP.Add(*rV)
+	*rP = rP.Add(*rV)
 }

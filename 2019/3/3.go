@@ -63,7 +63,7 @@ func makePath(wire string) (p path) {
 		d := w[0]
 		x, _ := strconv.Atoi(w[1:])
 		for i := 0; i < x; i++ {
-			v.Add(dirs[d])
+			v = v.Add(dirs[d])
 
 			if _, exists := p[v]; !exists {
 				p[v] = l
