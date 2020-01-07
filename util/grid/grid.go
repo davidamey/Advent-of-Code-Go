@@ -19,6 +19,16 @@ func New() *Grid {
 	return g
 }
 
+func FromLines(lines []string) *Grid {
+	g := New()
+	for y, l := range lines {
+		for x, r := range l {
+			g.SetAt(x, y, r)
+		}
+	}
+	return g
+}
+
 func (g *Grid) Clone() *Grid {
 	ng := &Grid{
 		Min:     g.Min,
