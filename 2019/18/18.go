@@ -19,17 +19,12 @@ func main() {
 func p1() int {
 	lines := util.MustReadFileToLines("inputP1")
 	var starts []vector.Vec
-	var keys []rune
 	g := grid.New()
 	for y, l := range lines {
 		for x, r := range l {
 			g.SetAt(x, y, rune(r))
-
-			switch {
-			case r == '@':
+			if r == '@' {
 				starts = append(starts, vector.New(x, y))
-			case r >= 'a' && r <= 'z':
-				keys = append(keys, r)
 			}
 		}
 	}
@@ -41,17 +36,12 @@ func p1() int {
 func p2() int {
 	lines := util.MustReadFileToLines("inputP2")
 	var starts []vector.Vec
-	var keys []rune
 	g := grid.New()
 	for y, l := range lines {
 		for x, r := range l {
 			g.SetAt(x, y, rune(r))
-
-			switch {
-			case r == '@':
+			if r == '@' {
 				starts = append(starts, vector.New(x, y))
-			case r >= 'a' && r <= 'z':
-				keys = append(keys, r)
 			}
 		}
 	}
@@ -124,6 +114,13 @@ func (k keymap) clone() keymap {
 	return k2
 }
 
+func (k keymap) haveKeyForDoor(d rune) bool {
+	if d < 'A' || d > 'Z' {
+		panic("invalid door rune")
+	}
+	return k[d-'A'+'a']
+}
+
 type node struct {
 	pos   vector.Vec
 	depth int
@@ -133,7 +130,7 @@ type node struct {
 func (p *pather) reachableKeys(from []vector.Vec, ownedKeys keymap) (foundKeys map[rune]node) {
 	foundKeys = make(map[rune]node)
 	for robot, f := range from {
-		toSearch := append([]vector.Vec{}, f)
+		toSearch := []vector.Vec{f}
 		distance := map[vector.Vec]int{f: 0}
 		for len(toSearch) > 0 {
 			var v vector.Vec
@@ -158,7 +155,7 @@ func (p *pather) reachableKeys(from []vector.Vec, ownedKeys keymap) (foundKeys m
 				}
 
 				// locked door
-				if r >= 'A' && r <= 'Z' && !ownedKeys[r-'A'+'a'] {
+				if r >= 'A' && r <= 'Z' && !ownedKeys.haveKeyForDoor(r) {
 					continue
 				}
 
@@ -168,7 +165,7 @@ func (p *pather) reachableKeys(from []vector.Vec, ownedKeys keymap) (foundKeys m
 				// found a key
 				if r >= 'a' && r <= 'z' && !ownedKeys[r] {
 					foundKeys[r] = node{w, distance[w], robot}
-				} else { // todo: think this can go
+				} else {
 					// a new place to stand
 					toSearch = append(toSearch, w)
 				}
