@@ -23,7 +23,7 @@ func OpenFile(name string) (*os.File, error) {
 
 	// If we're in 20xx base, then look in the appropriate 'day' folder
 	switch path.Base(dir) {
-	case "2015", "2016", "2017", "2018", "2019":
+	case "2015", "2016", "2017", "2018", "2019", "2020":
 		dir = path.Join(dir, path.Base(os.Args[0]))
 	}
 
