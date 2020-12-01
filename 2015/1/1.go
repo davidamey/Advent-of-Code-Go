@@ -3,48 +3,24 @@ package main
 import (
 	"advent-of-code-go/util"
 	"fmt"
-	"io/ioutil"
 )
 
 func main() {
-	file, _ := util.OpenInput()
-	defer file.Close()
-	input, _ := ioutil.ReadAll(file)
+	input := util.MustReadFile("input")
 
-	part1(input)
-	part2(input)
-}
-
-func part1(input []byte) {
-	floor := 0
-	for _, c := range input {
-		if c == '(' {
-			floor++
-		} else {
-			floor--
-		}
-	}
-
-	fmt.Println("== part1 ==")
-	fmt.Printf("resultant floor: %d\n", floor)
-}
-
-func part2(input []byte) {
-	floor := 0
-	position := -1
+	p1, p2 := 0, -1
 	for i, c := range input {
 		if c == '(' {
-			floor++
+			p1++
 		} else {
-			floor--
+			p1--
 		}
 
-		if floor == -1 {
-			position = i + 1
-			break
+		if p1 == -1 && p2 == -1 {
+			p2 = i + 1
 		}
 	}
 
-	fmt.Println("== part2 ==")
-	fmt.Printf("position when enters basement: %d\n", position)
+	fmt.Println("p1=", p1)
+	fmt.Println("p2=", p2)
 }
