@@ -63,9 +63,8 @@ func solve(asteroids []asteroid) (p1, p2 int) {
 		θi, θj := angles[i], angles[j]
 		if (θi <= math.Pi/2) == (θj <= math.Pi/2) {
 			return θi >= θj
-		} else {
-			return θi <= math.Pi/2
 		}
+		return θi <= math.Pi/2
 	})
 
 	count := 0
@@ -74,7 +73,7 @@ func solve(asteroids []asteroid) (p1, p2 int) {
 			as := base.sightlines[θ]
 			if len(as) > 0 {
 				var a asteroid
-				a, as = as[0], as[1:]
+				a, base.sightlines[θ] = as[0], as[1:]
 				// fmt.Println("laz0ring", a.pos)
 				count++
 				if count == 200 {

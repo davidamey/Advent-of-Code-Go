@@ -1,7 +1,7 @@
 package main
 
 import (
-	"advent/2017/10/knothash"
+	"advent-of-code-go/2017/10/knothash"
 	"advent-of-code-go/util"
 	"fmt"
 	"strconv"

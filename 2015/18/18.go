@@ -2,18 +2,15 @@ package main
 
 import (
 	"advent-of-code-go/util"
-	"advent/util/grid"
-	"advent/util/vector"
+	"advent-of-code-go/util/grid"
+	"advent-of-code-go/util/vector"
 	"fmt"
 )
 
 const steps = 100
 
 func main() {
-	// file, _ := util.OpenExample()
-	file, _ := util.OpenInput()
-	defer file.Close()
-	lines, _ := util.ReadLines(file)
+	lines := util.MustReadFileToLines("input")
 
 	initial := grid.New()
 	for y, l := range lines {

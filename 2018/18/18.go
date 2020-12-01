@@ -2,6 +2,7 @@ package main
 
 import (
 	"advent-of-code-go/util"
+	"advent-of-code-go/util/vector"
 	"fmt"
 )
 
@@ -118,7 +119,7 @@ func part2(lines []string) {
 func Evolve(g *Grid, x, y int) rune {
 	// fmt.Printf("Looking at cell (%d, %d) = %c\n", x, y, (*g)[y][x])
 	b1, b2 := g.Bounds()
-	p := util.Vec{X: x, Y: y}
+	p := vector.Vec{X: x, Y: y}
 
 	area := make(map[rune]int, 3)
 	// fmt.Println("  adjacent", p.Adjacent(true))
@@ -185,13 +186,13 @@ func (g *Grid) Clone() *Grid {
 	return &clone
 }
 
-func (g *Grid) Bounds() (b1, b2 util.Vec) {
+func (g *Grid) Bounds() (b1, b2 vector.Vec) {
 	h := len(*g)
 	w := 0
 	if h > 0 {
 		w = len((*g)[0])
 	}
-	return util.Vec{X: 0, Y: 0}, util.Vec{X: w - 1, Y: h - 1}
+	return vector.Vec{X: 0, Y: 0}, vector.Vec{X: w - 1, Y: h - 1}
 }
 
 func (g *Grid) Print(clear bool) {

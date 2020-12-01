@@ -2,7 +2,7 @@ package main
 
 import (
 	"advent-of-code-go/util"
-	"advent/util/vector"
+	"advent-of-code-go/util/vector"
 	"fmt"
 	"image"
 	"image/color"

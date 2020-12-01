@@ -2,6 +2,7 @@ package main
 
 import (
 	"advent-of-code-go/util"
+	"advent-of-code-go/util/vector"
 	"fmt"
 	"sort"
 	"time"
@@ -116,18 +117,18 @@ func (g *Game) Run(visual, allowElfDeath bool) (elfDied bool) {
 }
 
 type PathNode struct {
-	Pos    util.Vec
+	Pos    vector.Vec
 	Length int
 	Parent *PathNode
 }
 
-func ShortestPath(start util.Vec, ends []util.Vec, grid [][]rune) []PathNode {
+func ShortestPath(start vector.Vec, ends []vector.Vec, grid [][]rune) []PathNode {
 	var found []PathNode
 
 	queue := make([]PathNode, 1, 4)
 	queue[0] = PathNode{start, 0, nil}
 
-	processed := make(map[util.Vec]bool)
+	processed := make(map[vector.Vec]bool)
 
 	depth := 0
 	shortest := -1
@@ -180,9 +181,9 @@ func Parse(lines []string, elfAtk int) *Game {
 		for x, r := range l {
 			switch r {
 			case 'E':
-				g.Units = append(g.Units, &Unit{&g, r, util.Vec{X: x, Y: y}, 200, elfAtk})
+				g.Units = append(g.Units, &Unit{&g, r, vector.Vec{X: x, Y: y}, 200, elfAtk})
 			case 'G':
-				g.Units = append(g.Units, &Unit{&g, r, util.Vec{X: x, Y: y}, 200, 3})
+				g.Units = append(g.Units, &Unit{&g, r, vector.Vec{X: x, Y: y}, 200, 3})
 			}
 			g.Grid[y][x] = r
 		}

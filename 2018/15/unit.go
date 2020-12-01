@@ -2,13 +2,14 @@ package main
 
 import (
 	"advent-of-code-go/util"
+	"advent-of-code-go/util/vector"
 	"sort"
 )
 
 type Unit struct {
 	Game *Game
 	Rune rune
-	Pos  util.Vec
+	Pos  vector.Vec
 	HP   int
 	Atk  int
 }
@@ -66,7 +67,7 @@ func (u *Unit) Opponent() *Unit {
 }
 
 func (u *Unit) Move() bool {
-	var moveTargets []util.Vec
+	var moveTargets []vector.Vec
 	targets := u.Targets()
 	if len(targets) == 0 {
 		return false

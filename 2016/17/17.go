@@ -1,7 +1,7 @@
 package main
 
 import (
-	"advent/util/vector"
+	"advent-of-code-go/util/vector"
 	"crypto/md5"
 	"fmt"
 )

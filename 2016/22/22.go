@@ -2,8 +2,8 @@ package main
 
 import (
 	"advent-of-code-go/util"
-	"advent/util/grid"
-	"advent/util/vector"
+	"advent-of-code-go/util/grid"
+	"advent-of-code-go/util/vector"
 	"fmt"
 )
 
