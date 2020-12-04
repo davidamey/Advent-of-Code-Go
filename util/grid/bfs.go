@@ -11,7 +11,7 @@ type PathNode struct {
 type PathValidator func(v interface{}, depth int) bool
 
 func (g *Grid) ShortestPath(start vector.Vec, end vector.Vec, valid PathValidator) (path *PathNode) {
-	queue := []*PathNode{&PathNode{start, 0, nil}}
+	queue := []*PathNode{{start, 0, nil}}
 	seen := make(map[vector.Vec]struct{})
 
 	depth := 0
