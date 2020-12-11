@@ -56,21 +56,21 @@ func (v *Vec) ManhattanTo(to Vec) int {
 func (v *Vec) Adjacent(withCorners bool) []Vec {
 	if withCorners {
 		return []Vec{
-			Vec{v.X - 1, v.Y - 1},
-			Vec{v.X, v.Y - 1},
-			Vec{v.X + 1, v.Y - 1},
-			Vec{v.X - 1, v.Y},
-			Vec{v.X + 1, v.Y},
-			Vec{v.X - 1, v.Y + 1},
-			Vec{v.X, v.Y + 1},
-			Vec{v.X + 1, v.Y + 1},
+			{v.X - 1, v.Y - 1},
+			{v.X, v.Y - 1},
+			{v.X + 1, v.Y - 1},
+			{v.X - 1, v.Y},
+			{v.X + 1, v.Y},
+			{v.X - 1, v.Y + 1},
+			{v.X, v.Y + 1},
+			{v.X + 1, v.Y + 1},
 		}
 	}
 	return []Vec{
-		Vec{v.X, v.Y - 1},
-		Vec{v.X - 1, v.Y},
-		Vec{v.X + 1, v.Y},
-		Vec{v.X, v.Y + 1},
+		{v.X, v.Y - 1},
+		{v.X - 1, v.Y},
+		{v.X + 1, v.Y},
+		{v.X, v.Y + 1},
 	}
 }
 
