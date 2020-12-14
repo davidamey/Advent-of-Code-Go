@@ -1,6 +1,25 @@
 package util
 
-import "math"
+import (
+	"math"
+	"math/big"
+	"strconv"
+)
+
+func AbsInt(i int) int {
+	if i < 0 {
+		return -i
+	}
+	return i
+}
+
+func Atoi(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic("can't parse to int: " + s)
+	}
+	return i
+}
 
 func MinInt(inputs ...int) int {
 	min := math.MaxInt32
@@ -22,50 +41,11 @@ func MaxInt(inputs ...int) int {
 	return max
 }
 
-func AbsInt(i int) int {
-	if i < 0 {
-		return -i
-	}
-	return i
-}
-
-func IntToDigits(x int) (digits []int) {
-	if x == 0 {
-		return []int{}
-	}
-	return append(IntToDigits(x/10), x%10)
-}
-
 func DigitsToInt(digits []int) (x int) {
 	pow := 1
 	for i := len(digits) - 1; i >= 0; i-- {
 		x += digits[i] * pow
 		pow *= 10
-	}
-	return
-}
-
-func Pow(base, pow int) int {
-	r := 1
-	for pow > 0 {
-		if pow&1 != 0 {
-			r *= base
-		}
-		pow >>= 1
-		base *= base
-	}
-	return r
-}
-
-func PowMod(base, pow, mod int) (r int) {
-	base = base % mod
-	r = 1
-	for pow > 0 {
-		if pow&1 != 0 {
-			r = (r * base) % mod
-		}
-		pow >>= 1
-		base *= base
 	}
 	return
 }
@@ -94,6 +74,13 @@ func GCD(a, b int) int {
 	return a * (1 << d)
 }
 
+func IntToDigits(x int) (digits []int) {
+	if x == 0 {
+		return []int{}
+	}
+	return append(IntToDigits(x/10), x%10)
+}
+
 func LCM(nums ...int) (m int) {
 	m = 1
 	for _, n := range nums {
@@ -105,4 +92,43 @@ func LCM(nums ...int) (m int) {
 func lcm(a, b int) int {
 	// Theoretically more efficient to divide first
 	return (a / GCD(a, b)) * b
+}
+
+func Mod(x, m int) int {
+	r := x % m
+	if r < 0 {
+		return r + m
+	}
+	return r
+}
+
+func ModInverse(x, mod int) int {
+	bx := big.NewInt(int64(x))
+	bx.ModInverse(bx, big.NewInt(int64(mod)))
+	return int(bx.Int64())
+}
+
+func Pow(base, pow int) int {
+	r := 1
+	for pow > 0 {
+		if pow&1 != 0 {
+			r *= base
+		}
+		pow >>= 1
+		base *= base
+	}
+	return r
+}
+
+func PowMod(base, pow, mod int) (r int) {
+	base = base % mod
+	r = 1
+	for pow > 0 {
+		if pow&1 != 0 {
+			r = (r * base) % mod
+		}
+		pow >>= 1
+		base *= base
+	}
+	return
 }
