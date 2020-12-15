@@ -15,23 +15,23 @@ func main() {
 	turnSpoken := make(map[int]int) // number spoken to turn spoken
 	lastSpoken := 0
 	var p1 int
-	for i := 1; i <= 30000000; i++ {
-		if i <= len(input) {
-			turnSpoken[lastSpoken] = i - 1
-			lastSpoken = input[i-1]
+	for i := 0; i < 30000000; i++ {
+		if i < len(input) {
+			turnSpoken[lastSpoken] = i
+			lastSpoken = input[i]
 			continue
 		}
 
 		turnBefore, heardBefore := turnSpoken[lastSpoken]
-		turnSpoken[lastSpoken] = i - 1
+		turnSpoken[lastSpoken] = i
 
 		if heardBefore {
-			lastSpoken = i - 1 - turnBefore
+			lastSpoken = i - turnBefore
 		} else {
 			lastSpoken = 0
 		}
 
-		if i == 2020 {
+		if i+1 == 2020 {
 			p1 = lastSpoken
 		}
 	}
