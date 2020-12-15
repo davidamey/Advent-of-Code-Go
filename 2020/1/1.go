@@ -19,7 +19,7 @@ func p1(entries []int) int {
 			}
 		}
 	}
-	return 0
+	panic("no answer found")
 }
 
 func p2(entries []int) int {
@@ -32,5 +32,5 @@ func p2(entries []int) int {
 			}
 		}
 	}
-	return 0
+	panic("no answer found")
 }
