@@ -37,5 +37,5 @@ func main() {
 	}
 
 	fmt.Println("p1=", p1)
-	fmt.Println("p1=", lastSpoken)
+	fmt.Println("p2=", lastSpoken)
 }
