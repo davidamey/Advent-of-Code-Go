@@ -96,10 +96,15 @@ func MustReadFileToInts(filename string) []int {
 
 func MustReadCSInts(filename string) []int {
 	raw := string(MustReadFile(filename))
-	var ints []int
-	for _, c := range strings.Split(raw, ",") {
-		i, _ := strconv.Atoi(c)
-		ints = append(ints, i)
+	return ParseCSInts(raw)
+}
+
+func ParseCSInts(s string) []int {
+	parts := strings.Split(s, ",")
+	ints := make([]int, len(parts))
+	for i, p := range parts {
+		x, _ := strconv.Atoi(p)
+		ints[i] = x
 	}
 	return ints
 }
