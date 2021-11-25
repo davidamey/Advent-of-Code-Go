@@ -30,10 +30,6 @@ func main() {
 	fmt.Println("p2=", p2)
 }
 
-type runner struct {
-	accumulator int
-}
-
 func run(instructions []string, switchInstruct int) (accumulator int, terminated bool) {
 	seen := make(map[int]bool)
 	i := 0
