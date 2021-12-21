@@ -1,5 +1,9 @@
 package intgrid
 
+import (
+	"advent-of-code-go/util"
+)
+
 func Parse(lines []string) (grid []int, w, h int) {
 	h, w = len(lines), len(lines[0])
 	grid = make([]int, w*h)
@@ -49,4 +53,10 @@ func Adjacent(i, w, h int, diagonals bool) []int {
 	}
 
 	return adj
+}
+
+func Manhattan(from, to, w, h int) int {
+	dx := util.AbsInt(from%w - to%w)
+	dy := util.AbsInt(from/w - to/w)
+	return dx + dy
 }
