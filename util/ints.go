@@ -41,6 +41,21 @@ func MaxInt(inputs ...int) int {
 	return max
 }
 
+func IntProduct(inputs ...int) (product int) {
+	product = 1
+	for _, i := range inputs {
+		product *= i
+	}
+	return
+}
+
+func IntSum(inputs ...int) (sum int) {
+	for _, i := range inputs {
+		sum += i
+	}
+	return
+}
+
 func DigitsToInt(digits []int) (x int) {
 	pow := 1
 	for i := len(digits) - 1; i >= 0; i-- {
