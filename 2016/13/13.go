@@ -40,7 +40,7 @@ func main() {
 	path := g.ShortestPath(
 		vector.New(1, 1),
 		vector.New(targetX, targetY),
-		func(v interface{}, depth int) bool {
+		func(v, _ interface{}, depth int) bool {
 			valid := v.(rune) == pathOpen
 			if valid && depth+1 <= 50 {
 				countBelow50++

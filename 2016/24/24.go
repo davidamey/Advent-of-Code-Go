@@ -66,6 +66,6 @@ func main() {
 	fmt.Println("p2=", p2)
 }
 
-func pv(v interface{}, depth int) bool {
+func pv(v, _ interface{}, depth int) bool {
 	return v.(rune) != '#'
 }

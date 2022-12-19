@@ -64,7 +64,7 @@ func p2(nodes []*node) {
 		g.SetAt(n.x, n.y, c)
 	}
 
-	path := g.ShortestPath(vector.New(empty.x, empty.y), vector.New(maxX-1, 0), func(v interface{}, depth int) bool {
+	path := g.ShortestPath(vector.New(empty.x, empty.y), vector.New(maxX-1, 0), func(v, _ interface{}, depth int) bool {
 		return v.(rune) == '.'
 	})
 
