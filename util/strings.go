@@ -1,5 +1,7 @@
 package util
 
+import "strings"
+
 func Intersect(s1, s2 []string) (intersection []string) {
 	m := make(map[string]uint8)
 	for _, k := range s1 {
@@ -27,4 +29,9 @@ func RemoveString(list *[]string, s string) {
 		}
 	}
 	(*list) = (*list)[:n]
+}
+
+func Divide(s, sep string) (string, string) {
+	parts := strings.SplitN(s, sep, 2)
+	return parts[0], parts[1]
 }
