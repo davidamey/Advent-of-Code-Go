@@ -103,7 +103,7 @@ func ParseCSInts(s string) []int {
 	parts := strings.Split(s, ",")
 	ints := make([]int, len(parts))
 	for i, p := range parts {
-		x, _ := strconv.Atoi(p)
+		x, _ := strconv.Atoi(strings.TrimSpace(p))
 		ints[i] = x
 	}
 	return ints
