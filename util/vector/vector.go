@@ -79,6 +79,10 @@ func (v *Vec) Within(b1, b2 Vec) bool {
 		v.Y >= b1.Y && v.Y <= b2.Y
 }
 
+func (v Vec) Touches(w Vec) bool {
+	return util.AbsInt(w.X-v.X) <= 1 && util.AbsInt(w.Y-v.Y) <= 1
+}
+
 func (v Vec) Add(w Vec) Vec {
 	return Vec{v.X + w.X, v.Y + w.Y}
 }
