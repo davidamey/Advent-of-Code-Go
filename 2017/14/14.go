@@ -11,7 +11,7 @@ import (
 const input = "hwlqcszp"
 
 func main() {
-	g := grid.New()
+	g := grid.New[rune]()
 
 	used := 0
 	for y := 0; y < 128; y++ {
@@ -25,8 +25,8 @@ func main() {
 	}
 
 	regionCount := 0
-	g.ForEach(func(v vector.Vec, i interface{}) {
-		if r := i.(rune); r == '0' || r == '2' {
+	g.ForEach(func(v vector.Vec, r rune) {
+		if r == '0' || r == '2' {
 			return
 		}
 
@@ -42,7 +42,7 @@ func main() {
 			g.Set(q, '2')
 
 			for _, a := range q.Adjacent(false) {
-				if g.InBounds(a) && g.Rune(a) == '1' {
+				if g.InBounds(a) && g.Get(a) == '1' {
 					queue = append(queue, a)
 				}
 			}

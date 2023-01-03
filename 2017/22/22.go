@@ -12,7 +12,7 @@ func main() {
 	input := util.MustReadFileToLines("input")
 
 	// initial grid
-	g := grid.New()
+	g := grid.New[rune]()
 	for y, l := range input {
 		for x, ch := range l {
 			g.SetAt(x, y, ch)
@@ -28,7 +28,7 @@ func main() {
 	fmt.Println("p2=", p2(g.Clone()))
 }
 
-func p1(g *grid.Grid) (p1 int) {
+func p1(g *grid.Grid[rune]) (p1 int) {
 	c := &carrier{
 		p: vector.New((1+g.Max.X)/2, (1+g.Max.Y)/2),
 		v: vector.New(0, -1),
@@ -36,8 +36,8 @@ func p1(g *grid.Grid) (p1 int) {
 
 	// bursts
 	for b := 0; b < 10000; b++ {
-		e := g.Entry(c.p)
-		if e != nil && e.(rune) == '#' {
+		r := g.Get(c.p)
+		if r == '#' {
 			c.v.X, c.v.Y = -c.v.Y, c.v.X // turn right
 			g.Set(c.p, '.')
 		} else {
@@ -50,7 +50,7 @@ func p1(g *grid.Grid) (p1 int) {
 	return
 }
 
-func p2(g *grid.Grid) (p2 int) {
+func p2(g *grid.Grid[rune]) (p2 int) {
 	c := &carrier{
 		p: vector.New((1+g.Max.X)/2, (1+g.Max.Y)/2),
 		v: vector.New(0, -1),
@@ -59,8 +59,8 @@ func p2(g *grid.Grid) (p2 int) {
 	// bursts
 	for b := 0; b < 10000000; b++ {
 		r := '.'
-		if e := g.Entry(c.p); e != nil {
-			r = e.(rune)
+		if e := g.Get(c.p); e != 0 {
+			r = e
 		}
 		switch r {
 		case '.':
@@ -85,7 +85,7 @@ type carrier struct {
 	p, v vector.Vec
 }
 
-func printGrid(g *grid.Grid, c *carrier) {
+func printGrid(g *grid.Grid[rune], c *carrier) {
 	g = g.Clone()
 
 	g.Min = g.Min.Add(vector.New(-3, -3))
@@ -95,8 +95,8 @@ func printGrid(g *grid.Grid, c *carrier) {
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
 			r := '.'
-			if e := g.EntryAt(x, y); e != nil {
-				r = e.(rune)
+			if e := g.GetAt(x, y); e != 0 {
+				r = e
 			}
 
 			switch {

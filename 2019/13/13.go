@@ -39,7 +39,7 @@ func p2(prog intcode.Program) (score int) {
 		in:      make(chan int),
 		out:     make(chan int),
 		running: true,
-		grid:    grid.New(),
+		grid:    grid.New[rune](),
 	}
 
 	prog[0] = 2
@@ -76,7 +76,7 @@ type game struct {
 	ballX, padX int
 	score       int
 	running     bool
-	grid        *grid.Grid
+	grid        *grid.Grid[rune]
 }
 
 func (g *game) getJoyDir() int {

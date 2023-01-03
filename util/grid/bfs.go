@@ -8,9 +8,9 @@ type PathNode struct {
 	Parent *PathNode
 }
 
-type PathValidator func(v, parent interface{}, depth int) bool
+type PathValidator[T any] func(v, parent T, depth int) bool
 
-func (g *Grid) ShortestPath(start vector.Vec, end vector.Vec, valid PathValidator) (path *PathNode) {
+func (g *Grid[T]) ShortestPath(start vector.Vec, end vector.Vec, valid PathValidator[T]) (path *PathNode) {
 	queue := []*PathNode{{start, 0, nil}}
 	seen := make(map[vector.Vec]struct{})
 
@@ -36,7 +36,7 @@ func (g *Grid) ShortestPath(start vector.Vec, end vector.Vec, valid PathValidato
 		}
 
 		// Add all unseen children to the queue
-		parent := g.Entry(node.Pos)
+		parent := g.Get(node.Pos)
 		for _, c := range node.Pos.Adjacent(false) {
 			if _, ok := seen[c]; ok {
 				continue
@@ -46,7 +46,7 @@ func (g *Grid) ShortestPath(start vector.Vec, end vector.Vec, valid PathValidato
 				continue
 			}
 
-			if valid(g.Entry(c), parent, depth) {
+			if valid(g.Get(c), parent, depth) {
 				n := &PathNode{c, depth + 1, node}
 				queue = append(queue, n)
 				seen[c] = struct{}{}

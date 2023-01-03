@@ -46,7 +46,7 @@ func p2(nodes []*node) {
 		}
 	}
 
-	g := grid.New()
+	g := grid.New[rune]()
 	for _, n := range nodes {
 		c := '.'
 		switch {
@@ -64,8 +64,8 @@ func p2(nodes []*node) {
 		g.SetAt(n.x, n.y, c)
 	}
 
-	path := g.ShortestPath(vector.New(empty.x, empty.y), vector.New(maxX-1, 0), func(v, _ interface{}, depth int) bool {
-		return v.(rune) == '.'
+	path := g.ShortestPath(vector.New(empty.x, empty.y), vector.New(maxX-1, 0), func(v, _ rune, depth int) bool {
+		return v == '.'
 	})
 
 	// path.length puts the empty drive next to goal data

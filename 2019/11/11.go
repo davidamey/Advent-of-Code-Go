@@ -23,7 +23,7 @@ func p1(p intcode.Program) {
 		running = false
 	}()
 
-	g := grid.New()
+	g := grid.New[int]()
 	rP := vector.New(0, 0)
 	rV := vector.New(0, -1)
 
@@ -44,7 +44,7 @@ func p2(p intcode.Program) {
 		running = false
 	}()
 
-	g := grid.New()
+	g := grid.New[int]()
 	rP := vector.New(0, 0)
 	rV := vector.New(0, -1)
 	g.Set(rP, 1)
@@ -56,11 +56,7 @@ func p2(p intcode.Program) {
 	fmt.Println("p2=")
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
-			v := 0
-			if e := g.EntryAt(x, y); e != nil {
-				v = e.(int)
-			}
-			if v == 1 {
+			if g.GetAt(x, y) == 1 {
 				fmt.Print("#")
 			} else {
 				fmt.Print(" ")
@@ -70,13 +66,8 @@ func p2(p intcode.Program) {
 	}
 }
 
-func act(g *grid.Grid, rP, rV *vector.Vec, pIn, pOut chan int) {
-	current := 0
-	if e := g.Entry(*rP); e != nil {
-		current = e.(int)
-	}
-
-	pIn <- current
+func act(g *grid.Grid[int], rP, rV *vector.Vec, pIn, pOut chan int) {
+	pIn <- g.Get(*rP)
 	colour, turn := <-pOut, <-pOut
 	g.Set(*rP, colour)
 	if turn == 0 { // left

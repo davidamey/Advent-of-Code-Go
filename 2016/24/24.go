@@ -15,7 +15,7 @@ func main() {
 	lines := util.MustReadFileToLines("input")
 
 	poiVecs := make(map[int]vector.Vec)
-	g := grid.New()
+	g := grid.New[rune]()
 	for y, l := range lines {
 		for x, c := range l {
 			g.SetAt(x, y, c)
@@ -66,6 +66,6 @@ func main() {
 	fmt.Println("p2=", p2)
 }
 
-func pv(v, _ interface{}, depth int) bool {
-	return v.(rune) != '#'
+func pv(v, _ rune, depth int) bool {
+	return v != '#'
 }

@@ -39,7 +39,7 @@ func part1(lines []string) {
 				p = newp
 			}
 		}
-		code[i] = pad.Rune(p)
+		code[i] = pad.Get(p)
 	}
 
 	fmt.Println("p1=", string(code))
@@ -68,8 +68,8 @@ func part2(lines []string) {
 	fmt.Println("p2=", string(code))
 }
 
-func makePad() *grid.Grid {
-	pad := grid.New()
+func makePad() *grid.Grid[rune] {
+	pad := grid.New[rune]()
 	pad.SetAt(0, 0, '1')
 	pad.SetAt(1, 0, '2')
 	pad.SetAt(2, 0, '3')

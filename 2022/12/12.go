@@ -19,8 +19,8 @@ func main() {
 
 	var starts []vector.Vec
 	var end vector.Vec
-	g.ForEach(func(v vector.Vec, r interface{}) {
-		switch r.(rune) {
+	g.ForEach(func(v vector.Vec, r rune) {
+		switch r {
 		case 'S':
 			starts = append([]vector.Vec{v}, starts...)
 			g.Set(v, 'a')
@@ -41,9 +41,9 @@ func main() {
 	fmt.Println("p2=", util.MinInt(pathLengths...))
 }
 
-func solve(g *grid.Grid, start, end vector.Vec) int {
-	n := g.ShortestPath(start, end, func(v, parent interface{}, depth int) bool {
-		return v.(rune) <= parent.(rune)+1
+func solve(g *grid.Grid[rune], start, end vector.Vec) int {
+	n := g.ShortestPath(start, end, func(v, parent rune, depth int) bool {
+		return v <= parent+1
 	})
 	if n == nil {
 		return math.MaxInt

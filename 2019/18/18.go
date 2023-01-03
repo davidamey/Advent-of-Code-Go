@@ -19,7 +19,7 @@ func main() {
 func p1() int {
 	lines := util.MustReadFileToLines("inputP1")
 	var starts []vector.Vec
-	g := grid.New()
+	g := grid.New[rune]()
 	for y, l := range lines {
 		for x, r := range l {
 			g.SetAt(x, y, rune(r))
@@ -36,7 +36,7 @@ func p1() int {
 func p2() int {
 	lines := util.MustReadFileToLines("inputP2")
 	var starts []vector.Vec
-	g := grid.New()
+	g := grid.New[rune]()
 	for y, l := range lines {
 		for x, r := range l {
 			g.SetAt(x, y, rune(r))
@@ -51,7 +51,7 @@ func p2() int {
 }
 
 type pather struct {
-	grid *grid.Grid
+	grid *grid.Grid[rune]
 	seen map[string]int
 }
 
@@ -147,7 +147,7 @@ func (p *pather) reachableKeys(from []vector.Vec, ownedKeys keymap) (foundKeys m
 					continue
 				}
 
-				r := p.grid.Rune(w)
+				r := p.grid.Get(w)
 
 				// wall
 				if r == '#' {

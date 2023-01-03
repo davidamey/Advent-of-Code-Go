@@ -11,7 +11,7 @@ import (
 const maxLevel = 30
 
 type maze struct {
-	grid       *grid.Grid
+	grid       *grid.Grid[rune]
 	portals    map[vector.Vec]vector.Vec
 	start, end vector.Vec
 }
@@ -73,7 +73,7 @@ func (m *maze) findPath(recursive bool) (path *node) {
 				continue
 			}
 
-			r := m.grid.Rune(v)
+			r := m.grid.Get(v)
 			if r == '.' {
 				nn := &node{v, depth + 1, n.level, n}
 				queue = append(queue, nn)
@@ -109,7 +109,7 @@ func (m *maze) findPath(recursive bool) (path *node) {
 
 func newMaze(lines []string) *maze {
 	m := &maze{
-		grid:    grid.New(),
+		grid:    grid.New[rune](),
 		portals: make(map[vector.Vec]vector.Vec),
 	}
 
@@ -161,8 +161,7 @@ func newMaze(lines []string) *maze {
 func (m *maze) placeEntity(v1, v2 vector.Vec) vector.Vec {
 	diff := v2.Sub(v1)
 	x := v1.Sub(diff)
-	e := m.grid.Entry(x)
-	if e != nil && e.(rune) == '.' {
+	if m.grid.Get(x) == '.' {
 		return x
 	}
 	return v2.Add(diff)

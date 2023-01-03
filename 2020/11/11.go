@@ -14,10 +14,10 @@ func main() {
 	// g := grid.FromLines(util.MustReadFileToLines("example"))
 	g := grid.FromLines(util.MustReadFileToLines("input"))
 
-	p1 := evolve(g, func(g *grid.Grid, v vector.Vec, r rune) (evolution rune, changed bool) {
+	p1 := evolve(g, func(g *grid.Grid[rune], v vector.Vec, r rune) (evolution rune, changed bool) {
 		occupied := 0
 		for _, w := range v.Adjacent(true) {
-			if g.InBounds(w) && g.Rune(w) == '#' {
+			if g.InBounds(w) && g.Get(w) == '#' {
 				occupied++
 			}
 		}
@@ -32,11 +32,11 @@ func main() {
 		}
 	})
 
-	p2 := evolve(g, func(g *grid.Grid, v vector.Vec, r rune) (evolution rune, changed bool) {
+	p2 := evolve(g, func(g *grid.Grid[rune], v vector.Vec, r rune) (evolution rune, changed bool) {
 		occupied := 0
-		for _, dir := range []vector.Vec{{-1, -1}, {0, -1}, {1, -1}, {-1, 0}, {1, 0}, {-1, 1}, {0, 1}, {1, 1}} {
+		for _, dir := range []vector.Vec{{X: -1, Y: -1}, {X: 0, Y: -1}, {X: 1, Y: -1}, {X: -1, Y: 0}, {X: 1, Y: 0}, {X: -1, Y: 1}, {X: 0, Y: 1}, {X: 1, Y: 1}} {
 			for w := v.Add(dir); g.InBounds(w); w = w.Add(dir) {
-				if s := g.Rune(w); s == '#' {
+				if s := g.Get(w); s == '#' {
 					occupied++
 					break
 				} else if s == 'L' {
@@ -59,16 +59,16 @@ func main() {
 	fmt.Println("p2=", p2)
 }
 
-type evolveFn func(g *grid.Grid, v vector.Vec, r rune) (evolution rune, changed bool)
+type evolveFn func(g *grid.Grid[rune], v vector.Vec, r rune) (evolution rune, changed bool)
 
-func evolve(start *grid.Grid, ef evolveFn) (occupied int) {
+func evolve(start *grid.Grid[rune], ef evolveFn) (occupied int) {
 	g := start.Clone()
-	h := grid.New()
+	h := grid.New[rune]()
 
 	for {
 		changed := false
-		g.ForEach(func(v vector.Vec, i interface{}) {
-			r, c := ef(g, v, i.(rune))
+		g.ForEach(func(v vector.Vec, r rune) {
+			r, c := ef(g, v, r)
 			h.Set(v, r)
 			if c {
 				changed = true
@@ -81,8 +81,8 @@ func evolve(start *grid.Grid, ef evolveFn) (occupied int) {
 		}
 	}
 
-	g.ForEach(func(v vector.Vec, i interface{}) {
-		if i.(rune) == '#' {
+	g.ForEach(func(v vector.Vec, r rune) {
+		if r == '#' {
 			occupied++
 		}
 	})

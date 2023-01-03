@@ -21,7 +21,7 @@ func main() {
 
 	for i := 0; i < iter; i++ {
 		parts, size := gridToParts(g)
-		transformedParts := make([]*grid.Grid, len(parts))
+		transformedParts := make([]*grid.Grid[rune], len(parts))
 
 		rules := threeRules
 		if size == 2 {
@@ -51,30 +51,30 @@ func main() {
 	fmt.Println("p2=", onCount(g))
 }
 
-func onCount(g *grid.Grid) (onCount int) {
-	g.ForEach(func(v vector.Vec, i interface{}) {
-		if i.(rune) == '#' {
+func onCount(g *grid.Grid[rune]) (onCount int) {
+	g.ForEach(func(v vector.Vec, r rune) {
+		if r == '#' {
 			onCount++
 		}
 	})
 	return
 }
 
-func gridToString(g *grid.Grid) string {
+func gridToString(g *grid.Grid[rune]) string {
 	var sb strings.Builder
 	var lastY int
-	g.ForEach(func(v vector.Vec, i interface{}) {
+	g.ForEach(func(v vector.Vec, r rune) {
 		if v.Y != lastY {
 			sb.WriteRune('/')
 			lastY = v.Y
 		}
-		sb.WriteRune(i.(rune))
+		sb.WriteRune(r)
 	})
 	return sb.String()
 }
 
-func stringToGrid(str string) *grid.Grid {
-	g := grid.New()
+func stringToGrid(str string) *grid.Grid[rune] {
+	g := grid.New[rune]()
 	for y, row := range strings.Split(str, "/") {
 		for x, ch := range row {
 			g.SetAt(x, y, ch)
@@ -83,7 +83,7 @@ func stringToGrid(str string) *grid.Grid {
 	return g
 }
 
-func gridToParts(g *grid.Grid) (parts []*grid.Grid, partSize int) {
+func gridToParts(g *grid.Grid[rune]) (parts []*grid.Grid[rune], partSize int) {
 	if (g.Max.X+1)%2 == 0 {
 		partSize = 2
 	} else {
@@ -98,11 +98,11 @@ func gridToParts(g *grid.Grid) (parts []*grid.Grid, partSize int) {
 	return
 }
 
-func partsToGrid(parts []*grid.Grid) *grid.Grid {
+func partsToGrid(parts []*grid.Grid[rune]) *grid.Grid[rune] {
 	partSize := parts[0].Max.X + 1
 	x := 0
 	y := 0
-	g := grid.New()
+	g := grid.New[rune]()
 	gw := int(math.Sqrt(float64(len(parts))))
 	for i, p := range parts {
 		if i > 0 && i%gw == 0 {
@@ -110,8 +110,8 @@ func partsToGrid(parts []*grid.Grid) *grid.Grid {
 			y += partSize
 		}
 
-		p.ForEach(func(v vector.Vec, i interface{}) {
-			g.SetAt(x+v.X, y+v.Y, i)
+		p.ForEach(func(v vector.Vec, r rune) {
+			g.SetAt(x+v.X, y+v.Y, r)
 		})
 
 		x += partSize
@@ -122,7 +122,7 @@ func partsToGrid(parts []*grid.Grid) *grid.Grid {
 
 type rule struct {
 	patterns []string
-	output   *grid.Grid
+	output   *grid.Grid[rune]
 }
 
 func newTwoRule(in, out string) *rule {

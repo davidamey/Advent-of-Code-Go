@@ -32,7 +32,7 @@ func main() {
 	// rotCol(g, 1, 1)
 	// g.Print("%c", false)
 
-	g := grid.New()
+	g := grid.New[rune]()
 	g.FillAt(0, 0, gW, gH, pxOff)
 
 	lines := util.MustReadFileToLines("input")
@@ -54,8 +54,8 @@ func main() {
 	}
 
 	p1 := 0
-	g.ForEach(func(v vector.Vec, i interface{}) {
-		if i.(rune) == pxOn {
+	g.ForEach(func(v vector.Vec, r rune) {
+		if r == pxOn {
 			p1++
 		}
 	})
@@ -66,18 +66,18 @@ func main() {
 
 }
 
-func rect(g *grid.Grid, w, h int) {
+func rect(g *grid.Grid[rune], w, h int) {
 	g.FillAt(0, 0, w, h, pxOn)
 }
 
-func rotCol(g *grid.Grid, x, n int) {
+func rotCol(g *grid.Grid[rune], x, n int) {
 	col := g.Col(x)
 	for y, r := range col {
 		g.SetAt(x, (y+n)%gH, r)
 	}
 }
 
-func rotRow(g *grid.Grid, y, n int) {
+func rotRow(g *grid.Grid[rune], y, n int) {
 	row := g.Row(y)
 	for x, r := range row {
 		g.SetAt((x+n)%gW, y, r)

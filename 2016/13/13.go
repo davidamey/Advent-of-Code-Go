@@ -23,7 +23,7 @@ const (
 )
 
 func main() {
-	g := grid.New()
+	g := grid.New[rune]()
 	for y := 0; y <= targetY+buffer; y++ {
 		for x := 0; x <= targetX+buffer; x++ {
 			n := x*x + 3*x + 2*x*y + y + y*y
@@ -40,8 +40,8 @@ func main() {
 	path := g.ShortestPath(
 		vector.New(1, 1),
 		vector.New(targetX, targetY),
-		func(v, _ interface{}, depth int) bool {
-			valid := v.(rune) == pathOpen
+		func(v, _ rune, depth int) bool {
+			valid := v == pathOpen
 			if valid && depth+1 <= 50 {
 				countBelow50++
 			}

@@ -5,22 +5,22 @@ import (
 	"fmt"
 )
 
-type Grid struct {
+type Grid[T any] struct {
 	Min, Max vector.Vec
-	entries  map[vector.Vec]interface{}
+	entries  map[vector.Vec]T
 }
 
-func New() *Grid {
-	g := &Grid{
+func New[T any]() *Grid[T] {
+	g := &Grid[T]{
 		Min:     vector.NewMax(),
 		Max:     vector.NewMin(),
-		entries: make(map[vector.Vec]interface{}),
+		entries: make(map[vector.Vec]T),
 	}
 	return g
 }
 
-func FromLines(lines []string) *Grid {
-	g := New()
+func FromLines(lines []string) *Grid[rune] {
+	g := New[rune]()
 	for y, l := range lines {
 		for x, r := range l {
 			g.SetAt(x, y, r)
@@ -29,11 +29,11 @@ func FromLines(lines []string) *Grid {
 	return g
 }
 
-func (g *Grid) Clone() *Grid {
-	ng := &Grid{
+func (g *Grid[T]) Clone() *Grid[T] {
+	ng := &Grid[T]{
 		Min:     g.Min,
 		Max:     g.Max,
-		entries: make(map[vector.Vec]interface{}, len(g.entries)),
+		entries: make(map[vector.Vec]T, len(g.entries)),
 	}
 	for v, x := range g.entries {
 		ng.entries[v] = x
@@ -41,7 +41,7 @@ func (g *Grid) Clone() *Grid {
 	return ng
 }
 
-func (g *Grid) resizeFor(v vector.Vec) {
+func (g *Grid[T]) resizeFor(v vector.Vec) {
 	if v.X < g.Min.X {
 		g.Min.X = v.X
 	}
@@ -56,64 +56,53 @@ func (g *Grid) resizeFor(v vector.Vec) {
 	}
 }
 
-func (g *Grid) Entry(v vector.Vec) interface{} {
+func (g *Grid[T]) Get(v vector.Vec) T {
 	return g.entries[v]
 }
-func (g *Grid) Int(v vector.Vec) int {
-	return g.entries[v].(int)
-}
-func (g *Grid) Rune(v vector.Vec) rune {
-	return g.entries[v].(rune)
-}
-func (g *Grid) EntryAt(x, y int) interface{} {
+
+func (g *Grid[T]) GetAt(x, y int) T {
 	return g.entries[vector.New(x, y)]
 }
-func (g *Grid) IntAt(x, y int) int {
-	return g.entries[vector.New(x, y)].(int)
+
+func (g *Grid[T]) Set(v vector.Vec, i T) {
+	g.entries[v] = i
+	g.resizeFor(v)
 }
-func (g *Grid) RuneAt(x, y int) rune {
-	return g.entries[vector.New(x, y)].(rune)
+func (g *Grid[T]) SetAt(x, y int, i T) {
+	g.Set(vector.New(x, y), i)
 }
 
-func (g *Grid) Col(x int) []interface{} {
-	col := make([]interface{}, 1+g.Max.Y-g.Min.Y)
+func (g *Grid[T]) Col(x int) []T {
+	col := make([]T, 1+g.Max.Y-g.Min.Y)
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
-		col[y] = g.EntryAt(x, y)
+		col[y] = g.GetAt(x, y)
 	}
 	return col
 }
 
-func (g *Grid) Row(y int) []interface{} {
-	row := make([]interface{}, 1+g.Max.X-g.Min.X)
+func (g *Grid[T]) Row(y int) []T {
+	row := make([]T, 1+g.Max.X-g.Min.X)
 	for x := g.Min.X; x <= g.Max.X; x++ {
-		row[x] = g.EntryAt(x, y)
+		row[x] = g.GetAt(x, y)
 	}
 	return row
 }
 
-func (g *Grid) Set(v vector.Vec, i interface{}) {
-	g.entries[v] = i
-	g.resizeFor(v)
-}
-func (g *Grid) SetAt(x, y int, i interface{}) {
-	g.Set(vector.New(x, y), i)
-}
-
-func (g *Grid) Fill(v vector.Vec, w, h int, i interface{}) {
+func (g *Grid[T]) Fill(v vector.Vec, w, h int, i T) {
 	for y := v.Y; y < v.Y+h; y++ {
 		for x := v.X; x < v.X+w; x++ {
 			g.SetAt(x, y, i)
 		}
 	}
 }
-func (g *Grid) FillAt(x, y, w, h int, i interface{}) {
+func (g *Grid[T]) FillAt(x, y, w, h int, i T) {
 	g.Fill(vector.New(x, y), w, h, i)
 }
 
-func (g *Grid) InBounds(v vector.Vec) bool {
+func (g *Grid[T]) InBounds(v vector.Vec) bool {
 	return v.Within(g.Min, g.Max)
 }
-func (g *Grid) InBoundsAt(x, y int) bool {
+func (g *Grid[T]) InBoundsAt(x, y int) bool {
 	return g.InBounds(vector.New(x, y))
 }
 
@@ -126,26 +115,26 @@ func (g *Grid) InBoundsAt(x, y int) bool {
 // 	}
 // }
 
-func (g *Grid) SubGrid(x, y, w, h int) *Grid {
-	sg := New()
+func (g *Grid[T]) SubGrid(x, y, w, h int) *Grid[T] {
+	sg := New[T]()
 	for sx := 0; sx < w; sx++ {
 		for sy := 0; sy < h; sy++ {
-			sg.SetAt(sx, sy, g.EntryAt(x+sx, y+sy))
+			sg.SetAt(sx, sy, g.GetAt(x+sx, y+sy))
 		}
 	}
 	return sg
 }
 
-func (g *Grid) ForEach(fn func(v vector.Vec, i interface{})) {
+func (g *Grid[T]) ForEach(fn func(v vector.Vec, i T)) {
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
 			v := vector.New(x, y)
-			fn(v, g.Entry(v))
+			fn(v, g.Get(v))
 		}
 	}
 }
 
-func (g *Grid) Print(format string, clear bool) {
+func (g *Grid[T]) Print(format string, clear bool) {
 	if clear {
 		fmt.Printf("\033[0;0H")
 		fmt.Printf("\033[2J")
@@ -155,12 +144,12 @@ func (g *Grid) Print(format string, clear bool) {
 
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
-			fmt.Printf(format, g.EntryAt(x, y))
+			fmt.Printf(format, g.GetAt(x, y))
 		}
 		fmt.Println()
 	}
 }
 
-func (g *Grid) PrintRunes() {
+func (g *Grid[T]) PrintRunes() {
 	g.Print("%c", false)
 }

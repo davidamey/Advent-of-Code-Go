@@ -28,7 +28,7 @@ func main() {
 	}
 
 	out := prog.Run(ints...)
-	g := grid.New()
+	g := grid.New[rune]()
 	p := vector.New(0, 0)
 	for _, r := range out[:len(out)-1] {
 		if r == 10 {
@@ -48,7 +48,7 @@ func p1() {
 
 	out := prog.Run()
 
-	g := grid.New()
+	g := grid.New[rune]()
 	p := vector.New(0, 0)
 	for _, r := range out {
 		if r == 10 {
@@ -63,14 +63,13 @@ func p1() {
 	g.PrintRunes()
 
 	sum := 0
-	g.ForEach(func(v vector.Vec, i interface{}) {
-		r := i.(rune)
+	g.ForEach(func(v vector.Vec, r rune) {
 		if r != '#' {
 			return
 		}
 
 		for _, w := range v.Adjacent(false) {
-			if !g.InBounds(w) || g.Rune(w) != '#' {
+			if !g.InBounds(w) || g.Get(w) != '#' {
 				return
 			}
 		}

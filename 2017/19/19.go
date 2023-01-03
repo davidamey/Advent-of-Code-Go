@@ -13,7 +13,7 @@ func main() {
 
 	c := &cart{v: vector.New(0, 1)}
 
-	g := grid.New()
+	g := grid.New[rune]()
 	for y, l := range input {
 		for x, r := range l {
 			g.SetAt(x, y, r)
@@ -27,7 +27,7 @@ func main() {
 	for {
 		c.steps++
 		c.p = c.p.Add(c.v)
-		ch := g.Rune(c.p)
+		ch := g.Get(c.p)
 
 		if ch == ' ' {
 			break
@@ -41,13 +41,13 @@ func main() {
 		}
 
 		switch {
-		case c.v.X == 0 && g.Rune(c.p.Left()) != ' ':
+		case c.v.X == 0 && g.Get(c.p.Left()) != ' ':
 			c.v = vector.New(-1, 0)
-		case c.v.X == 0 && g.Rune(c.p.Right()) != ' ':
+		case c.v.X == 0 && g.Get(c.p.Right()) != ' ':
 			c.v = vector.New(1, 0)
-		case c.v.Y == 0 && g.Rune(c.p.Up()) != ' ':
+		case c.v.Y == 0 && g.Get(c.p.Up()) != ' ':
 			c.v = vector.New(0, -1)
-		case c.v.Y == 0 && g.Rune(c.p.Down()) != ' ':
+		case c.v.Y == 0 && g.Get(c.p.Down()) != ' ':
 			c.v = vector.New(0, 1)
 		}
 	}

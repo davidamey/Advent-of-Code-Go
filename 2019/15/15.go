@@ -16,7 +16,7 @@ func main() {
 	go prog.RunBuf(in, out)
 
 	d := &droid{
-		grid: grid.New(),
+		grid: grid.New[interface{}](),
 		in:   in,
 		out:  out,
 		path: []node{node{}},
@@ -27,7 +27,7 @@ func main() {
 
 }
 
-func part2(oxy vector.Vec, g *grid.Grid) (minutes int) {
+func part2(oxy vector.Vec, g *grid.Grid[interface{}]) (minutes int) {
 	minutes = -1
 	queue := []vector.Vec{oxy}
 	for len(queue) > 0 {
@@ -35,7 +35,7 @@ func part2(oxy vector.Vec, g *grid.Grid) (minutes int) {
 		for _, v := range queue {
 			g.Set(v, 2) // oxygenated
 			for _, a := range v.Adjacent(false) {
-				if g.Int(a) == 1 {
+				if g.Get(a).(int) == 1 {
 					nextQueue = append(nextQueue, a)
 				}
 			}
@@ -47,13 +47,13 @@ func part2(oxy vector.Vec, g *grid.Grid) (minutes int) {
 	return
 }
 
-func print(g *grid.Grid) {
+func print(g *grid.Grid[interface{}]) {
 	fmt.Printf("\033[0;0H")
 	fmt.Printf("\033[2J")
 
 	for y := g.Min.Y; y <= g.Max.Y; y++ {
 		for x := g.Min.X; x <= g.Max.X; x++ {
-			e := g.EntryAt(x, y)
+			e := g.GetAt(x, y)
 			r := '#'
 			s := "%c"
 			if e != nil {
@@ -81,7 +81,7 @@ type node struct {
 }
 
 type droid struct {
-	grid    *grid.Grid
+	grid    *grid.Grid[interface{}]
 	pos     vector.Vec
 	start   vector.Vec
 	oxy     vector.Vec
@@ -110,7 +110,7 @@ func (d *droid) findOxy() (min int) {
 		for i, v := range []vector.Vec{d.pos.Up(), d.pos.Down(), d.pos.Left(), d.pos.Right()} {
 			dir := i + 1
 
-			if d.grid.Entry(v) != nil {
+			if d.grid.Get(v) != nil {
 				// already visited
 				continue
 			}

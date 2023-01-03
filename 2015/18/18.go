@@ -12,7 +12,7 @@ const steps = 100
 func main() {
 	lines := util.MustReadFileToLines("input")
 
-	initial := grid.New()
+	initial := grid.New[rune]()
 	for y, l := range lines {
 		for x, r := range l {
 			initial.SetAt(x, y, r)
@@ -35,33 +35,33 @@ func main() {
 	}
 
 	p1 := 0
-	g1.ForEach(func(v vector.Vec, x interface{}) {
-		if x.(rune) == '#' {
+	g1.ForEach(func(v vector.Vec, r rune) {
+		if r == '#' {
 			p1++
 		}
 	})
 	fmt.Println("p1=", p1)
 
 	p2 := 0
-	g2.ForEach(func(v vector.Vec, x interface{}) {
-		if x.(rune) == '#' {
+	g2.ForEach(func(v vector.Vec, r rune) {
+		if r == '#' {
 			p2++
 		}
 	})
 	fmt.Println("p2=", p2)
 }
 
-func EvolveP1(g *grid.Grid) *grid.Grid {
+func EvolveP1(g *grid.Grid[rune]) *grid.Grid[rune] {
 	ng := g.Clone()
-	g.ForEach(func(v vector.Vec, x interface{}) {
+	g.ForEach(func(v vector.Vec, r rune) {
 		ng.Set(v, EvolvePoint(g, v))
 	})
 	return ng
 }
 
-func EvolveP2(g *grid.Grid) *grid.Grid {
+func EvolveP2(g *grid.Grid[rune]) *grid.Grid[rune] {
 	ng := g.Clone()
-	g.ForEach(func(v vector.Vec, x interface{}) {
+	g.ForEach(func(v vector.Vec, r rune) {
 		switch v {
 		case
 			vector.Vec{X: g.Min.X, Y: g.Min.Y},
@@ -76,11 +76,11 @@ func EvolveP2(g *grid.Grid) *grid.Grid {
 	return ng
 }
 
-func EvolvePoint(g *grid.Grid, v vector.Vec) rune {
-	sum := RuneToScore(g.Rune(v))
+func EvolvePoint(g *grid.Grid[rune], v vector.Vec) rune {
+	sum := RuneToScore(g.Get(v))
 	for _, a := range v.Adjacent(true) {
 		if g.InBounds(a) {
-			sum += RuneToScore(g.Rune(a))
+			sum += RuneToScore(g.Get(a))
 		}
 	}
 
@@ -88,7 +88,7 @@ func EvolvePoint(g *grid.Grid, v vector.Vec) rune {
 	case 3:
 		return '#'
 	case 4:
-		return g.Rune(v)
+		return g.Get(v)
 	default:
 		return '.'
 	}
