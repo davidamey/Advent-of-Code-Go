@@ -64,7 +64,7 @@ func main() {
 			known = append(known, a)
 			delete(allAllergens, k)
 			for _, x := range allAllergens {
-				util.RemoveString(&x.ingredients, a.ingredients[0])
+				util.Remove(&x.ingredients, a.ingredients[0])
 			}
 		}
 	}
