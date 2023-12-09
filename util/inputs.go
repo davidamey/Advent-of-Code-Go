@@ -108,3 +108,12 @@ func ParseCSInts(s string) []int {
 	}
 	return ints
 }
+
+func ParseInts(s string) []int {
+	parts := strings.Fields(s)
+	ints := make([]int, len(parts))
+	for i, p := range parts {
+		ints[i] = Atoi(p)
+	}
+	return ints
+}
