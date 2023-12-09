@@ -3,7 +3,6 @@ package util
 import (
 	"bufio"
 	"io"
-	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
@@ -61,7 +60,7 @@ func ReadLines(r io.Reader) ([]string, error) {
 func MustReadFile(filename string) []byte {
 	file, _ := OpenFile(filename)
 	defer file.Close()
-	b, err := ioutil.ReadAll(file)
+	b, err := io.ReadAll(file)
 	if err != nil {
 		panic(err)
 	}
