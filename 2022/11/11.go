@@ -90,7 +90,7 @@ func newMonkey(lines []string) *monkey {
 	m := &monkey{}
 	fmt.Sscanf(lines[0], "Monkey %d", &m.id)
 
-	m.items = util.ParseCSInts(lines[1][17:])
+	m.items = util.ParseInts(lines[1][17:], ",")
 
 	opParts := strings.SplitN(lines[2][23:], " ", 2)
 	usesOld := opParts[1] == "old"

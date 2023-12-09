@@ -14,7 +14,7 @@ func main() {
 
 	p1, p2 := 0, 0
 	for _, line := range lines {
-		l, r := nextNumber(util.ParseInts(line))
+		l, r := nextNumber(util.ParseInts(line, " "))
 		p1 += r
 		p2 += l
 	}

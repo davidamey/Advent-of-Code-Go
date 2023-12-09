@@ -11,7 +11,7 @@ func main() {
 	// lines := util.MustReadFileToLines("example")
 	lines := util.MustReadFileToLines("input")
 
-	calls := util.ParseCSInts(lines[0])
+	calls := util.ParseInts(lines[0], ",")
 
 	var boards []*bingoBoard
 	for i := 2; i < len(lines)-4; i += 6 {

@@ -108,11 +108,11 @@ func parseInfo(lines []string) (rules []*rule, myTicket []int, nearbyTickets [][
 	}
 
 	i++
-	myTicket = util.ParseCSInts(lines[i])
+	myTicket = util.ParseInts(lines[i], ",")
 
 	i += 3
 	for _, l := range lines[i:] {
-		nearbyTickets = append(nearbyTickets, util.ParseCSInts(l))
+		nearbyTickets = append(nearbyTickets, util.ParseInts(l, ","))
 	}
 
 	return
