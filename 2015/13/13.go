@@ -73,7 +73,7 @@ func (tp *TablePlanner) HapinessForTable(table []string) int {
 }
 
 func (tp *TablePlanner) MaxHapiness() int {
-	sp := util.NewStringPermuter(tp.People)
+	sp := util.NewPermuter(tp.People)
 
 	maxH := 0
 	for t := range sp.Permutations() {

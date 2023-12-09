@@ -48,7 +48,7 @@ func main() {
 
 	p1 := 1 << 32
 	p2 := 1 << 32
-	for route := range util.NewIntPermuter(pois).Permutations() {
+	for route := range util.NewPermuter(pois).Permutations() {
 		cost := dists[0][route[0]]
 		for i := 0; i < len(route)-1; i++ {
 			cost += dists[route[i]][route[i+1]]

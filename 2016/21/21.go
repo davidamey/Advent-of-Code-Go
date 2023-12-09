@@ -23,7 +23,7 @@ func main() {
 
 	fmt.Println("p1=", scramble(input, ops))
 
-	permuter := util.NewBytePermuter([]byte("fbgdceah"))
+	permuter := util.NewPermuter([]byte("fbgdceah"))
 	for p := range permuter.Permutations() {
 		if scramble(string(p), ops) == "fbgdceah" {
 			fmt.Println("p2=", string(p))

@@ -13,7 +13,7 @@ func main() {
 	lines, _ := util.ReadLines(file)
 
 	rp := ParseLines(lines)
-	sp := util.NewStringPermuter(rp.Cities)
+	sp := util.NewPermuter(rp.Cities)
 
 	minD := math.MaxInt32
 	maxD := 0

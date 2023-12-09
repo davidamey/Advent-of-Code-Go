@@ -21,7 +21,7 @@ func p1(data []int) int {
 	prog := intcode.Program(data)
 	maxE := math.MinInt16
 	// var maxEperm []int
-	for p := range util.NewIntPermuter([]int{0, 1, 2, 3, 4}).Permutations() {
+	for p := range util.NewPermuter([]int{0, 1, 2, 3, 4}).Permutations() {
 		a := prog.Run(p[0], 0)
 		b := prog.Run(p[1], a[0])
 		c := prog.Run(p[2], b[0])
@@ -42,7 +42,7 @@ func p2(data []int) (maxV int) {
 	chanSize := 2
 
 	prog := intcode.Program(data)
-	for p := range util.NewIntPermuter([]int{5, 6, 7, 8, 9}).Permutations() {
+	for p := range util.NewPermuter([]int{5, 6, 7, 8, 9}).Permutations() {
 		in := make(chan int, chanSize)
 		in <- p[0]
 		in <- 0
