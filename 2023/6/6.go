@@ -13,7 +13,7 @@ func main() {
 	// raw := string(util.MustReadFile("example"))
 	raw := string(util.MustReadFile("input"))
 
-	rawTimes, rawDistances := util.Divide(raw, "\n")
+	rawTimes, rawDistances, _ := strings.Cut(raw, "\n")
 
 	var times []int
 	for _, f := range strings.Fields(rawTimes)[1:] {
