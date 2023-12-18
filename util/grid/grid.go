@@ -134,6 +134,16 @@ func (g *Grid[T]) ForEach(fn func(v vector.Vec, i T)) {
 	}
 }
 
+func (g *Grid[T]) RotateCW() {
+	h := g.Clone()
+	g.entries = make(map[vector.Vec]T, len(g.entries))
+	g.Min.X, g.Min.Y = g.Min.Y, g.Min.X
+	g.Max.X, g.Max.Y = g.Max.Y, g.Max.X
+	for v, r := range h.entries {
+		g.entries[vector.New(g.Max.X-v.Y, v.X)] = r
+	}
+}
+
 func (g *Grid[T]) Print(format string, clear bool) {
 	if clear {
 		fmt.Printf("\033[0;0H")
